@@ -37,6 +37,7 @@ public class FinalRegistry {
         BlockRegistry.register();
         TileentityRegistry.register();
         RecipeRegistry.register(modEventBus);
+        EntityRegistry.register(modEventBus);
         ContainerRegistry.containerRegistry();
     }
 
@@ -51,7 +52,7 @@ public class FinalRegistry {
     public static final ItemGroup MC2Blocks = new ItemGroup("Magneticraft2 Blocks") {
         @Override
         public ItemStack makeIcon() {
-            return null;
+            return new ItemStack(BlockRegistry.Block_Conveyor.get());
 //            return new ItemStack(BlockRegistry.Solar_Panel_T1_SubPanels.get());
         }
     };

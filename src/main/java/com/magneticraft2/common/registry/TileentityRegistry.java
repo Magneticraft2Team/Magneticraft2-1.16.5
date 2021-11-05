@@ -1,5 +1,6 @@
 package com.magneticraft2.common.registry;
 
+import com.magneticraft2.common.tile.conveyor.TileEntityConveyor;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
@@ -19,6 +20,14 @@ public class TileentityRegistry {
         });
     }
 
+    /**
+     * none multiblock tiles
+     */
+    public static final RegistryObject<TileEntityType<TileEntityConveyor>> Tile_Conveyor = register("conveyor", TileEntityConveyor::new, BlockRegistry.Block_Conveyor);
+
+
+
+    //This is for IF we make cables (prop never gonna happen but its here)
     public static void registerTileEntities(RegistryEvent.Register<TileEntityType<?>> event) {
 
     }

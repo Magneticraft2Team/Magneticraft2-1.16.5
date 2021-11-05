@@ -1,6 +1,9 @@
 package com.magneticraft2.common.registry;
 
+import com.magneticraft2.common.block.conveyor.BlockConveyor;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
@@ -18,6 +21,15 @@ public class BlockRegistry {
         FinalRegistry.ITEMS.register(name, () -> new BlockItem(ret.get(), new Item.Properties().tab(FinalRegistry.MC2Blocks)));
         return ret;
     }
+
+    /**
+     * None MB blocks
+     */
+    public static final RegistryObject<Block> Block_Conveyor = register("conveyor", () -> new BlockConveyor(AbstractBlock.Properties.of(Material.METAL).strength(3.5F).noOcclusion().requiresCorrectToolForDrops()));
+
+
+
+    //Some cable stuff (prop never gonna be used=
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll();
     }

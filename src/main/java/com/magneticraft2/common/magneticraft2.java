@@ -35,7 +35,7 @@ import java.util.HashMap;
 
 @Mod(magneticraft2.MOD_ID)
 public class magneticraft2 {
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
     public static final boolean devmode = false;
     private static long tick = 0;
     public static final String MOD_ID = "magneticraft2";
