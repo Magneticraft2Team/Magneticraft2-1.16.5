@@ -1,7 +1,10 @@
 package com.magneticraft2.common.tile;
 
+import com.magneticraft2.common.systems.heating.HeatCapacitorHandler;
+import com.magneticraft2.common.systems.heating.IHeatCapacitorHolder;
 import com.magneticraft2.common.systems.heating.ITileHeatHandler;
 import com.magneticraft2.common.utils.EnergyStorage;
+import com.magneticraft2.common.utils.HeatCapacitorHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -26,14 +29,19 @@ import javax.annotation.Nullable;
 
 public abstract class TileEntityMagneticraft2 extends TileEntity implements ITileHeatHandler, ITickableTileEntity, IAnimatable{
     private static final Logger LOGGER = LogManager.getLogger();
-    private static Integer capacity = 25000;
+    private static Integer capacity;
     private static Integer maxtransfer;
-    private static Integer invsize = 2;
+    private static Integer invsize;
     private EnergyStorage energyStorage = createEnergy();
     private ItemStackHandler itemHandler = createHandler();
     private static boolean itemcap;
     private static boolean energycap;
     private static boolean heatcape;
+    private static Integer HeatCapacity;
+    private static Integer ConductionEff;
+    private static Integer InsulationEff;
+    private boolean isDirectional;
+    HeatCapacitorHandler heatCapacitor;
     final AnimationFactory factory = new AnimationFactory(this);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
@@ -76,6 +84,9 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITil
     void setInvsize(int size){
         invsize = size;
     }
+    void setHeatCapacity(int cap){ HeatCapacity = cap; }
+    void setConductionEff(int eff){ ConductionEff = eff; }
+    void setInsulationEff(int eff){ InsulationEff = eff; }
 
     private EnergyStorage createEnergy() {
         return new EnergyStorage(capacity, maxtransfer){
@@ -103,6 +114,29 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITil
                 return super.insertItem(slot, stack, simulate);
             }
         };
+    }
+    @Nullable
+    private Direction cachedDirection;
+    @Nullable
+    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
+        builder.addCapacitor(heatCapacitor = HeatCapacitorHandler.create(HeatCapacity, ConductionEff, InsulationEff, this));
+        return builder.build();
+    }
+    @Nonnull
+    public final Direction getDirection() {
+        if (isDirectional) {
+            if (cachedDirection != null) {
+                return cachedDirection;
+            }
+            BlockState state = getBlockState();
+            if (cachedDirection != null) {
+                return cachedDirection;
+            } else if (!getType().isValid(state.getBlock())) {
+                //dosomething at some point
+            }
+        }
+        return Direction.NORTH;
     }
 
 

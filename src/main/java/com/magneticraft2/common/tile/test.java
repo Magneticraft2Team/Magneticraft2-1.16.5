@@ -1,6 +1,9 @@
 package com.magneticraft2.common.tile;
 
+import com.magneticraft2.common.systems.heating.HeatCapacitorHandler;
 import com.magneticraft2.common.systems.heating.IHeatCapacitor;
+import com.magneticraft2.common.systems.heating.IHeatCapacitorHolder;
+import com.magneticraft2.common.utils.HeatCapacitorHelper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
@@ -22,6 +25,9 @@ public class test extends TileEntityMagneticraft2{
         setCapacity(3000);
         setMaxtransfer(300);
         setInvsize(0);
+        setHeatCapacity(3000);
+        setConductionEff(5);
+        setInsulationEff(100);
     }
 
 
@@ -50,4 +56,6 @@ public class test extends TileEntityMagneticraft2{
     public AnimationFactory getFactory() {
         return factory;
     }
+
+
 }
