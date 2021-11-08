@@ -69,7 +69,7 @@ public class TileEntityConveyor extends TileEntity implements ITickableTileEntit
         if (entity.getY() > heightLimit) {
             return;
         }
-        magneticraft2.LOGGER.info("test");
+
         xSpeed = facing.getStepX() * speed;
         ySpeed = 0.0D;
         zSpeed = facing.getStepZ() * speed;

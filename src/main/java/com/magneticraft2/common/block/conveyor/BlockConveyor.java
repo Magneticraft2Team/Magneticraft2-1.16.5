@@ -169,7 +169,7 @@ public class BlockConveyor extends Block {
 
     @Override
     public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        worldIn.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.HORIZONTAL_FACING, placer != null ? placer.getDirection() : Direction.NORTH).setValue(SPEED, ConveyorSpeed.SLOW).setValue(TYPE, ConveyorType.STRAIGHT));
+        worldIn.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.HORIZONTAL_FACING, placer != null ? placer.getDirection() : Direction.NORTH).setValue(SPEED, ConveyorSpeed.SLOWEST).setValue(TYPE, ConveyorType.STRAIGHT));
         super.setPlacedBy(worldIn, pos, state, placer, stack);
     }
 
