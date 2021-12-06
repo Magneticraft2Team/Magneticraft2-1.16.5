@@ -11,6 +11,7 @@ import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -39,6 +40,7 @@ public class FinalRegistry {
         RecipeRegistry.register(modEventBus);
         EntityRegistry.register(modEventBus);
         ContainerRegistry.containerRegistry();
+
     }
 
 
@@ -56,4 +58,6 @@ public class FinalRegistry {
 //            return new ItemStack(BlockRegistry.Solar_Panel_T1_SubPanels.get());
         }
     };
+
+
 }

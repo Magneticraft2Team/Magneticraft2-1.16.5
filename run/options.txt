@@ -25,7 +25,7 @@ fovEffectScale:1.0
 gamma:0.0
 renderDistance:12
 entityDistanceScaling:1.0
-guiScale:0
+guiScale:2
 particles:0
 maxFps:120
 difficulty:2
@@ -64,7 +64,7 @@ rawMouseInput:true
 glDebugVerbosity:1
 skipMultiplayerWarning:false
 hideMatchedNames:true
-joinedFirstServer:false
+joinedFirstServer:true
 syncChunkWrites:true
 key_key.attack:key.mouse.left
 key_key.use:key.mouse.right

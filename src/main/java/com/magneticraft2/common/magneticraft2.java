@@ -7,6 +7,7 @@ import com.magneticraft2.common.registry.BlockRegistry;
 import com.magneticraft2.common.registry.FinalRegistry;
 import com.magneticraft2.common.registry.ItemRegistry;
 import com.magneticraft2.common.registry.TileentityRegistry;
+import com.magneticraft2.common.systems.heat.CapabilityHeat;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -18,6 +19,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -47,8 +49,10 @@ public class magneticraft2 {
             LOGGER.info("Please report to author!");
         }
         LOGGER.info("Starting Registry");
+        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         GeckoLib.initialize();
         FinalRegistry.register();
+        modEventBus.addListener(this::preinit);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, BlockRegistry::registerItems);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, ItemRegistry::registerItems);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, BlockRegistry::registerBlocks);
@@ -70,6 +74,10 @@ public class magneticraft2 {
     @SubscribeEvent
     public void clientSetup(final FMLClientSetupEvent event) {
 
+    }
+
+    public void preinit(FMLCommonSetupEvent event){
+        CapabilityHeat.register();
     }
 
 

@@ -1,10 +1,9 @@
 package com.magneticraft2.common.tile;
 
-import com.magneticraft2.common.systems.heating.HeatCapacitorHandler;
-import com.magneticraft2.common.systems.heating.IHeatCapacitorHolder;
-import com.magneticraft2.common.systems.heating.ITileHeatHandler;
+import com.magneticraft2.common.systems.heat.CapabilityHeat;
+import com.magneticraft2.common.systems.heat.IHeatStorage;
 import com.magneticraft2.common.utils.EnergyStorage;
-import com.magneticraft2.common.utils.HeatCapacitorHelper;
+import com.magneticraft2.common.utils.HeatStorages;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -26,25 +25,25 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 
-public abstract class TileEntityMagneticraft2 extends TileEntity implements ITileHeatHandler, ITickableTileEntity, IAnimatable{
+public abstract class TileEntityMagneticraft2 extends TileEntity implements ITickableTileEntity, IAnimatable{
     private static final Logger LOGGER = LogManager.getLogger();
     private static Integer capacity;
     private static Integer maxtransfer;
+    private static Integer capacityH;
+    private static Integer maxtransferH;
     private static Integer invsize;
     private EnergyStorage energyStorage = createEnergy();
     private ItemStackHandler itemHandler = createHandler();
-    private static boolean itemcap;
-    private static boolean energycap;
-    private static boolean heatcape;
-    private static Integer HeatCapacity;
-    private static Integer ConductionEff;
-    private static Integer InsulationEff;
-    private boolean isDirectional;
-    HeatCapacitorHandler heatCapacitor;
+    private HeatStorages heatHandler = createHeat();
+    static boolean itemcap;
+    static boolean energycap;
+    static boolean heatcape;
     final AnimationFactory factory = new AnimationFactory(this);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
     private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
+    private LazyOptional<IHeatStorage> heat = LazyOptional.of(() -> heatHandler);
 
     public TileEntityMagneticraft2(TileEntityType<?> p_i48289_1_) {
         super(p_i48289_1_);
@@ -67,6 +66,11 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITil
                 return energy.cast();
             }
         }
+        if (cap == CapabilityHeat.HEAT) {
+            if (heatcape) {
+                return heat.cast();
+            }
+        }
         return super.getCapability(cap, side);
     }
 
@@ -84,60 +88,65 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITil
     void setInvsize(int size){
         invsize = size;
     }
-    void setHeatCapacity(int cap){ HeatCapacity = cap; }
-    void setConductionEff(int eff){ ConductionEff = eff; }
-    void setInsulationEff(int eff){ InsulationEff = eff; }
+    void setHeatCapacity(int cap) {
+        capacityH = cap;
+    }
+    void setMaxHeattransfer(int cap){
+        maxtransferH = cap;
+    }
 
+    public int getHeatStorage(){
+        return this.heatHandler.getHeatStored();
+    }
+
+    private HeatStorages createHeat(){
+        if (heatcape) {
+            return new HeatStorages(capacityH, maxtransferH){
+                @Override
+                protected void onHeatChanged() {
+                    setChanged();
+                }
+            };
+        }else {
+            return null;
+        }
+    }
     private EnergyStorage createEnergy() {
-        return new EnergyStorage(capacity, maxtransfer){
-            @Override
-            protected void onEnergyChanged() {
-                setChanged();
-            }
-        };
+        if (energycap) {
+            return new EnergyStorage(capacity, maxtransfer) {
+                @Override
+                protected void onEnergyChanged() {
+                    setChanged();
+                }
+            };
+        }else{
+            return null;
+        }
     }
     private ItemStackHandler createHandler() {
-        return new ItemStackHandler(invsize){
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-            }
+        if (energycap) {
+            return new ItemStackHandler(invsize) {
+                @Override
+                protected void onContentsChanged(int slot) {
+                    setChanged();
+                }
 
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return super.isItemValid(slot, stack);
-            }
+                @Override
+                public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+                    return super.isItemValid(slot, stack);
+                }
 
-            @Nonnull
-            @Override
-            public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
-                return super.insertItem(slot, stack, simulate);
-            }
-        };
-    }
-    @Nullable
-    private Direction cachedDirection;
-    @Nullable
-    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
-        HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addCapacitor(heatCapacitor = HeatCapacitorHandler.create(HeatCapacity, ConductionEff, InsulationEff, this));
-        return builder.build();
-    }
-    @Nonnull
-    public final Direction getDirection() {
-        if (isDirectional) {
-            if (cachedDirection != null) {
-                return cachedDirection;
-            }
-            BlockState state = getBlockState();
-            if (cachedDirection != null) {
-                return cachedDirection;
-            } else if (!getType().isValid(state.getBlock())) {
-                //dosomething at some point
-            }
+                @Nonnull
+                @Override
+                public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+                    return super.insertItem(slot, stack, simulate);
+                }
+            };
+        }else{
+            return null;
         }
-        return Direction.NORTH;
     }
+
 
 
     /*
@@ -152,6 +161,9 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITil
         if (energycap) {
             energyStorage.deserializeNBT(tag.getCompound("energy"));
         }
+        if (heatcape) {
+            heatHandler.deserializeNBT(tag.getCompound("heat"));
+        }
         return super.save(tag);
     }
 
@@ -162,6 +174,9 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITil
         }
         if (energycap) {
             tag.put("energy", energyStorage.serializeNBT());
+        }
+        if (heatcape) {
+            tag.put("heat", heatHandler.serializeNBT());
         }
         super.load(state, tag);
     }
