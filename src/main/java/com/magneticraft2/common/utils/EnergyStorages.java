@@ -2,10 +2,11 @@ package com.magneticraft2.common.utils;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.energy.EnergyStorage;
 
 
-public class EnergyStorage extends net.minecraftforge.energy.EnergyStorage implements INBTSerializable<CompoundNBT> {
-    public EnergyStorage(int capacity, int maxTransfer) {
+public class EnergyStorages extends EnergyStorage implements INBTSerializable<CompoundNBT> {
+    public EnergyStorages(int capacity, int maxTransfer) {
         super(capacity, maxTransfer);
     }
     protected void onEnergyChanged() {

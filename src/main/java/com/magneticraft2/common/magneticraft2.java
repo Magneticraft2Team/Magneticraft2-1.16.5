@@ -8,6 +8,7 @@ import com.magneticraft2.common.registry.FinalRegistry;
 import com.magneticraft2.common.registry.ItemRegistry;
 import com.magneticraft2.common.registry.TileentityRegistry;
 import com.magneticraft2.common.systems.heat.CapabilityHeat;
+import com.magneticraft2.common.systems.watt.CapabilityWatt;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -16,6 +17,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -78,6 +80,7 @@ public class magneticraft2 {
 
     public void preinit(FMLCommonSetupEvent event){
         CapabilityHeat.register();
+        CapabilityWatt.register();
     }
 
 

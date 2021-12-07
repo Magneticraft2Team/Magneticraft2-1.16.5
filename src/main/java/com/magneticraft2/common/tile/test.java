@@ -9,12 +9,23 @@ public class test extends TileEntityMagneticraft2{
 
     public test() {
         super(TileentityRegistry.test.get());
-        shouldHaveCapability(false,true,true);
+        /* Capabilities */
+        shouldHaveCapability(false,true,true, true, true);
+        /* Inv */
+        setInvsize(0);
+        /* Energy */
         setCapacity(3000);
         setMaxtransfer(300);
-        setInvsize(0);
+        /* Heat */
         setHeatCapacity(3000);
         setMaxHeattransfer(300);
+        /* Watt */
+        setWattCapacity(3000);
+        setMaxWatttransfer(3000);
+        /* Fluid */
+        setFluidCapacity(3000);
+        setFluidTanks(0);
+        /* End */
     }
 
 

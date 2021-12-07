@@ -6,6 +6,6 @@ public interface IHeatStorage {
     int extractHeat(int maxExtract, boolean simulate);
     int getHeatStored();
     int getMaxHeatStored();
-    boolean canExtract();
+    boolean canSend();
     boolean canReceive();
 }

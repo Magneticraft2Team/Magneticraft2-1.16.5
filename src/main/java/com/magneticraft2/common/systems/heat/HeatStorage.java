@@ -54,7 +54,7 @@ public class HeatStorage implements IHeatStorage{
     }
 
     @Override
-    public boolean canExtract() {
+    public boolean canSend() {
         return this.maxExtract > 0;
     }
 
