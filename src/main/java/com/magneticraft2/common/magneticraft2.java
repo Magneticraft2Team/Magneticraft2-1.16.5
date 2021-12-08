@@ -9,6 +9,7 @@ import com.magneticraft2.common.registry.ItemRegistry;
 import com.magneticraft2.common.registry.TileentityRegistry;
 import com.magneticraft2.common.systems.heat.CapabilityHeat;
 import com.magneticraft2.common.systems.watt.CapabilityWatt;
+import com.magneticraft2.compatibility.TOP.TOPCompatibility;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -24,6 +25,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -81,6 +83,10 @@ public class magneticraft2 {
     public void preinit(FMLCommonSetupEvent event){
         CapabilityHeat.register();
         CapabilityWatt.register();
+        if (ModList.get().isLoaded("theoneprobe")){
+            TOPCompatibility.register();
+            LOGGER.info("The one probe compatibility done!");
+        }
     }
 
 

@@ -10,7 +10,7 @@ public class test extends TileEntityMagneticraft2{
     public test() {
         super(TileentityRegistry.test.get());
         /* Capabilities */
-        shouldHaveCapability(false,true,true, true, true);
+        shouldHaveCapability(false,true,true, true, false);
         /* Inv */
         setInvsize(0);
         /* Energy */
@@ -24,7 +24,7 @@ public class test extends TileEntityMagneticraft2{
         setMaxWatttransfer(3000);
         /* Fluid */
         setFluidCapacity(3000);
-        setFluidTanks(0);
+        setFluidTanks(1);
         /* End */
     }
 

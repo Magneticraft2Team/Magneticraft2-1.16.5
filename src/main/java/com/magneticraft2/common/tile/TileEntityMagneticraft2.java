@@ -31,7 +31,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.List;
+
 
 public abstract class TileEntityMagneticraft2 extends TileEntity implements ITickableTileEntity, IAnimatable{
     private static final Logger LOGGER = LogManager.getLogger();
@@ -309,4 +309,17 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     }
 
     /* end */
+
+
+    /*
+     * Used for TOP (TheOneProbe)
+     */
+
+    public boolean getHeatCap(){
+        return heatcape;
+    }
+    public boolean getWattCap(){
+        return wattcape;
+    }
+
 }

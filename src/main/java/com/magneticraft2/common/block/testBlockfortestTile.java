@@ -1,6 +1,13 @@
 package com.magneticraft2.common.block;
 
+import com.magneticraft2.common.systems.heat.CapabilityHeat;
+import com.magneticraft2.common.systems.watt.CapabilityWatt;
+import com.magneticraft2.common.tile.TileEntityMagneticraft2;
 import com.magneticraft2.common.tile.test;
+import com.magneticraft2.compatibility.TOP.TOPDriver;
+import mcjty.theoneprobe.api.IProbeHitData;
+import mcjty.theoneprobe.api.IProbeInfo;
+import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,7 +22,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public class testBlockfortestTile extends Block {
+public class testBlockfortestTile extends Block implements TOPDriver{
     public testBlockfortestTile(Properties p_i48440_1_) {
         super(p_i48440_1_);
     }
@@ -41,5 +48,20 @@ public class testBlockfortestTile extends Block {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new test();
+    }
+
+
+    @Override
+    public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world, BlockState blockState, IProbeHitData data) {
+        TileEntity te = world.getBlockEntity(data.getPos());
+        if (te instanceof TileEntityMagneticraft2){
+            TileEntityMagneticraft2 tile = (TileEntityMagneticraft2) te;
+            te.getCapability(CapabilityHeat.HEAT).ifPresent(h -> {
+                probeInfo.horizontal(probeInfo.defaultLayoutStyle()).progress(h.getHeatStored() % 100, 100, probeInfo.defaultProgressStyle().suffix(" H").borderColor(0xFF555555));
+            });
+            te.getCapability(CapabilityWatt.WATT).ifPresent(h -> {
+                probeInfo.horizontal(probeInfo.defaultLayoutStyle()).progress(h.getWattStored() % 100, 100, probeInfo.defaultProgressStyle().suffix(" W").borderColor(0xFF555555));
+            });
+        }
     }
 }
