@@ -2,12 +2,12 @@ package com.magneticraft2.common.tile;
 
 import com.magneticraft2.common.systems.heat.CapabilityHeat;
 import com.magneticraft2.common.systems.heat.IHeatStorage;
+import com.magneticraft2.common.systems.pressure.CapabilityPressure;
+import com.magneticraft2.common.systems.pressure.IPressureStorage;
+import com.magneticraft2.common.systems.pressure.PressureStorage;
 import com.magneticraft2.common.systems.watt.CapabilityWatt;
 import com.magneticraft2.common.systems.watt.IWattStorage;
-import com.magneticraft2.common.utils.EnergyStorages;
-import com.magneticraft2.common.utils.FluidStorages;
-import com.magneticraft2.common.utils.HeatStorages;
-import com.magneticraft2.common.utils.WattStorages;
+import com.magneticraft2.common.utils.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -49,42 +49,52 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     private static Integer tanks;
     /* Inv */
     private static Integer invsize;
-    private EnergyStorages energyStorage = createEnergy();
-    private ItemStackHandler itemHandler = createHandler();
-    private HeatStorages heatHandler = createHeat();
-    private WattStorages wattHandler = createWatt();
-    private FluidStorages fluidHandler = createFluid();
-    static boolean itemcap;
-    static boolean energycap;
-    static boolean heatcape;
-    static boolean wattcape;
-    static boolean fluidcape;
+    /* Pressure */
+    private static Integer capacityP;
+    private static Integer maxtransferP;
+    /* Create handlers */
+    private EnergyStorages energyHandler = createEnergy(); //Energy (RF)
+    private ItemStackHandler itemHandler = createInv(); //Item
+    private HeatStorages heatHandler = createHeat(); //Heat
+    private WattStorages wattHandler = createWatt(); //Watt
+    private FluidStorages fluidHandler = createFluid(); //Fluid
+    private PressureStorages pressureHandler = createPressure(); //Pressure
+
+    static boolean itemcape; //Is the TileEntity capable of Item handling
+    static boolean energycape; //Is the TileEntity capable of Energy (RF) handling
+    static boolean heatcape; //Is the TileEntity capable of Heat handling
+    static boolean wattcape; //Is the TileEntity capable of Wattage/Voltage handling
+    static boolean fluidcape; //Is the TileEntity capable of Fluid handling
+    static boolean pressurecape; //Is the TileEntity capable of Pressure handling
+
     final AnimationFactory factory = new AnimationFactory(this);
-    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyStorage);
-    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler);
-    private LazyOptional<IHeatStorage> heat = LazyOptional.of(() -> heatHandler);
-    private LazyOptional<IWattStorage> watt = LazyOptional.of(() -> wattHandler);
-    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(() -> fluidHandler);
+    private LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyHandler); //Creating LazyOptional for Energy (RF)
+    private LazyOptional<IItemHandler> handler = LazyOptional.of(() -> itemHandler); //Creating LazyOptional for Item
+    private LazyOptional<IHeatStorage> heat = LazyOptional.of(() -> heatHandler); //Creating LazyOptional for Heat
+    private LazyOptional<IWattStorage> watt = LazyOptional.of(() -> wattHandler); //Creating LazyOptional for Wattage/Voltage
+    private LazyOptional<IFluidHandler> fluid = LazyOptional.of(() -> fluidHandler); //Creating LazyOptional for Fluid
+    private LazyOptional<IPressureStorage> pressure = LazyOptional.of(() -> pressureHandler); //Creating LazyOptional for Pressure
     public TileEntityMagneticraft2(TileEntityType<?> p_i48289_1_) {
         super(p_i48289_1_);
     }
-    void shouldHaveCapability(boolean itemcaps, boolean energycaps, boolean heatcaps, boolean wattcapes, boolean fluidcapes){
-        itemcap = itemcaps;
-        energycap = energycaps;
+    void shouldHaveCapability(boolean itemcaps, boolean energycaps, boolean heatcaps, boolean wattcapes, boolean fluidcapes, boolean pressurecapes){
+        itemcape = itemcaps;
+        energycape = energycaps;
         heatcape = heatcaps;
         wattcape = wattcapes;
         fluidcape = fluidcapes;
+        pressurecape = pressurecapes;
     }
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
         if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (itemcap) {
+            if (itemcape) {
                 return handler.cast();
             }
         }
         if (cap == CapabilityEnergy.ENERGY) {
-            if (energycap) {
+            if (energycape) {
                 return energy.cast();
             }
         }
@@ -103,33 +113,38 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
                 return fluid.cast();
             }
         }
+        if (cap == CapabilityPressure.PRESSURE) {
+            if (pressurecape) {
+                return pressure.cast();
+            }
+        }
         return super.getCapability(cap, side);
     }
 
 
 
     /*
-     *Energy, Item, Fluid & Heat handler
+     *Energy, Item, Fluid, Pressure & Heat handler
      */
-    void setCapacity(int cap){
+    void setCapacity(int cap) {
         capacity = cap;
     }
-    void setMaxtransfer(int max){
+    void setMaxtransfer(int max) {
         maxtransfer = max;
     }
-    void setInvsize(int size){
+    void setInvsize(int size) {
         invsize = size;
     }
     void setHeatCapacity(int cap) {
         capacityH = cap;
     }
-    void setMaxHeattransfer(int cap){
+    void setMaxHeattransfer(int cap) {
         maxtransferH = cap;
     }
-    void setWattCapacity(int cap){
+    void setWattCapacity(int cap) {
         capacityW = cap;
     }
-    void setMaxWatttransfer(int cap){
+    void setMaxWatttransfer(int cap) {
         maxtransferW = cap;
     }
     void setFluidCapacity(int cap) {
@@ -137,6 +152,12 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     }
     void setFluidTanks(int cap) {
         tanks = cap;
+    }
+    void setPressureCapacity(int cap) {
+        capacityP = cap;
+    }
+    void  setMaxPressuretransfer(int cap) {
+        maxtransferP = cap;
     }
 
     private FluidStorages createFluid(){
@@ -181,7 +202,7 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
         }
     }
     private EnergyStorages createEnergy() {
-        if (energycap) {
+        if (energycape) {
             return new EnergyStorages(capacity, maxtransfer) {
                 @Override
                 protected void onEnergyChanged() {
@@ -192,8 +213,21 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
             return null;
         }
     }
-    private ItemStackHandler createHandler() {
-        if (energycap) {
+    private PressureStorages createPressure() {
+        if (pressurecape) {
+            return new PressureStorages(capacityP, maxtransferP) {
+                @Override
+                protected void onPressureChanged(){
+                    setChanged();
+                }
+            };
+        }else {
+            return null;
+        }
+    }
+
+    private ItemStackHandler createInv() {
+        if (energycape) {
             return new ItemStackHandler(invsize) {
                 @Override
                 protected void onContentsChanged(int slot) {
@@ -224,17 +258,20 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
 
     @Override
     public CompoundNBT save(CompoundNBT tag) {
-        if (itemcap) {
+        if (itemcape) {
             itemHandler.deserializeNBT(tag.getCompound("inv"));
         }
-        if (energycap) {
-            energyStorage.deserializeNBT(tag.getCompound("energy"));
+        if (energycape) {
+            energyHandler.deserializeNBT(tag.getCompound("energy"));
         }
         if (heatcape) {
             heatHandler.deserializeNBT(tag.getCompound("heat"));
         }
         if (wattcape) {
             wattHandler.deserializeNBT(tag.getCompound("watt"));
+        }
+        if (pressurecape) {
+            pressureHandler.deserializeNBT(tag.getCompound("pressure"));
         }
         if (fluidcape) {
             fluidHandler.deserializeNBT(tag.getCompound("fluidamount"));
@@ -245,17 +282,20 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
 
     @Override
     public void load(BlockState state, CompoundNBT tag) {
-        if (itemcap) {
+        if (itemcape) {
             tag.put("inv", itemHandler.serializeNBT());
         }
-        if (energycap) {
-            tag.put("energy", energyStorage.serializeNBT());
+        if (energycape) {
+            tag.put("energy", energyHandler.serializeNBT());
         }
         if (heatcape) {
             tag.put("heat", heatHandler.serializeNBT());
         }
         if (wattcape) {
-            tag.put("wat", wattHandler.serializeNBT());
+            tag.put("watt", wattHandler.serializeNBT());
+        }
+        if (pressurecape) {
+            tag.put("pressure", pressureHandler.serializeNBT());
         }
         if (fluidcape) {
             tag.put("fluidamount", fluidHandler.serializeNBT());
@@ -286,10 +326,10 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
 
     /* Energy */
     public int getEnergyStorage(){
-        return this.energyStorage.getEnergyStored();
+        return this.energyHandler.getEnergyStored();
     }
     public int getMaxEnergyStorage(){
-        return this.energyStorage.getMaxEnergyStored();
+        return this.energyHandler.getMaxEnergyStored();
     }
 
     /* Item */
@@ -308,6 +348,15 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
         return 0;
     }
 
+    /* Pressure */
+
+    public int getPressureStorage(){
+        return this.pressureHandler.getPressureStored();
+    }
+    public int getMaxPressureStorage(){
+        return this.pressureHandler.getMaxPressureStored();
+    }
+
     /* end */
 
 
@@ -320,6 +369,10 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     }
     public boolean getWattCap(){
         return wattcape;
+    }
+
+    public boolean getPressureCap(){
+        return pressurecape;
     }
 
 }
