@@ -3,12 +3,10 @@ package com.magneticraft2.common;
 
 import com.magneticraft2.common.multiblock.generic.MultiblockController;
 import com.magneticraft2.common.multiblock.generic.MultiblockTile;
-import com.magneticraft2.common.registry.BlockRegistry;
-import com.magneticraft2.common.registry.FinalRegistry;
-import com.magneticraft2.common.registry.ItemRegistry;
-import com.magneticraft2.common.registry.TileentityRegistry;
+import com.magneticraft2.common.registry.*;
 import com.magneticraft2.common.systems.heat.CapabilityHeat;
 import com.magneticraft2.common.systems.watt.CapabilityWatt;
+import com.magneticraft2.common.utils.Magneticraft2Config;
 import com.magneticraft2.compatibility.TOP.TOPCompatibility;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -26,7 +24,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -61,6 +61,7 @@ public class magneticraft2 {
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, ItemRegistry::registerItems);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, BlockRegistry::registerBlocks);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(TileEntityType.class, TileentityRegistry::registerTileEntities);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(ContainerAndScreenRegistry::Screen);
         //FMLJavaModLoadingContext.get().getModEventBus().addListener(TagProviders::gatherData);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetups);
         //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, OreGeneration::generateOres);
@@ -68,6 +69,8 @@ public class magneticraft2 {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(magneticraft2.this::clientSetup);
         });
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Magneticraft2Config.SPEC, "magneticraft2-common.toml");
     }
 
     public void commonSetups(FMLCommonSetupEvent event) {

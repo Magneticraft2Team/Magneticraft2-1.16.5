@@ -64,7 +64,7 @@ public class TileEntityConveyor extends TileEntity implements ITickableTileEntit
         }
         ConveyorType type = bs.getValue(BlockConveyor.TYPE);
         double heightLimit = (type.isVertical()) ? pos.getY() + 1.3D : pos.getY() + 0.125D;
-        double speed = bs.getValue(BlockConveyor.SPEED).getSpeed(); //0.08D; //temp variable, replace with speed from blockstate later
+        double speed = bs.getValue(BlockConveyor.SPEED).getSpeed();
         double xSpeed = 0.0D, zSpeed = 0.0D, ySpeed = 0.0D;
         if (entity.getY() > heightLimit) {
             return;

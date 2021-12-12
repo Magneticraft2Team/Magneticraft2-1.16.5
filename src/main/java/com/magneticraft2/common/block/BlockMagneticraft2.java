@@ -11,12 +11,16 @@ import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+
 public abstract class BlockMagneticraft2 extends Block implements TOPDriver {
-    public BlockMagneticraft2(Properties p_i48440_1_) {
-        super(p_i48440_1_);
+    public BlockMagneticraft2(Properties properties) {
+        super(properties);
     }
 
     @Override

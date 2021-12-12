@@ -1,0 +1,7 @@
+
+["Configuration for Magneticraft 2"]
+	#This is an integer. Default value is 3.
+	"Example Integer" = 3
+	#This is a string. Default value is "Cy4".
+	"Example String" = "Cy4"
+
