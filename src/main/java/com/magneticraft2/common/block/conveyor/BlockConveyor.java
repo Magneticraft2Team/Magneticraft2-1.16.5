@@ -26,6 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class BlockConveyor extends Block {
     private static final int MAX_CONNECTED_UPDATE = 16;
     //main flat shape

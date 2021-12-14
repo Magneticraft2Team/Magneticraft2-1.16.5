@@ -8,6 +8,8 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+
 public class FluidStorages implements IFluidHandler, INBTSerializable<CompoundNBT> {
     private int tank;
     private int capacity;

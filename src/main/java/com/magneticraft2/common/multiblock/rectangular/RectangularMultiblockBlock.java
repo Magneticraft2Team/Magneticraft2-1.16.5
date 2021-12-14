@@ -12,6 +12,8 @@ import net.minecraftforge.common.property.Properties;
 import javax.annotation.Nonnull;
 import static com.magneticraft2.common.multiblock.rectangular.AxisPosition.*;
 
+
+
 public abstract class RectangularMultiblockBlock<ControllerType extends RectangularMultiblockController<ControllerType, TileType, BlockType>, TileType extends RectangularMultiblockTile<ControllerType, TileType, BlockType>, BlockType extends RectangularMultiblockBlock<ControllerType, TileType, BlockType>> extends MultiblockBlock<ControllerType, TileType, BlockType> {
 
     public RectangularMultiblockBlock(@Nonnull Properties properties) {

@@ -18,6 +18,8 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public abstract class BlockMagneticraft2 extends Block implements TOPDriver {
     public BlockMagneticraft2(Properties properties) {
         super(properties);

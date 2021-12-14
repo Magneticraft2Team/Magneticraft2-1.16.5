@@ -29,6 +29,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 public class HeatGeneratorBlock extends BlockMagneticraft2 {
     public HeatGeneratorBlock(Properties properties) {
         super(properties);
