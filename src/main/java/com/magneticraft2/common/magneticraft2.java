@@ -54,9 +54,9 @@ public class magneticraft2 {
         }
         LOGGER.info("Starting Registry");
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addListener(this::preinit);
         GeckoLib.initialize();
         FinalRegistry.register();
-        modEventBus.addListener(this::preinit);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, BlockRegistry::registerItems);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, ItemRegistry::registerItems);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, BlockRegistry::registerBlocks);

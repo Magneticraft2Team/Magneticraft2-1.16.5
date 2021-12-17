@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
 
 
 public abstract class TileEntityMagneticraft2 extends TileEntity implements ITickableTileEntity, IAnimatable{
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger();
     /* Energy */
     private static Integer capacity;
     private static Integer maxtransfer;
@@ -52,8 +52,11 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     /* Pressure */
     private static Integer capacityP;
     private static Integer maxtransferP;
+
+
+
     /* Create handlers */
-    private EnergyStorages energyHandler = createEnergy(); //Energy (RF)
+    private final EnergyStorages energyHandler = createEnergy(); //Energy (RF)
     private ItemStackHandler itemHandler = createInv(); //Item
     private HeatStorages heatHandler = createHeat(); //Heat
     private WattStorages wattHandler = createWatt(); //Watt
@@ -66,6 +69,15 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     static boolean wattcape; //Is the TileEntity capable of Wattage/Voltage handling
     static boolean fluidcape; //Is the TileEntity capable of Fluid handling
     static boolean pressurecape; //Is the TileEntity capable of Pressure handling
+
+    static boolean HeatCanReceive;
+    static boolean HeatCanSend;
+    static boolean WattCanReceive;
+    static boolean WattCanSend;
+    static boolean EnergyCanReceive;
+    static boolean EnergyCanSend;
+    static boolean PressureCanReceive;
+    static boolean PressureCanSend;
 
     public final AnimationFactory factory = new AnimationFactory(this);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyHandler); //Creating LazyOptional for Energy (RF)
@@ -88,33 +100,33 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (itemcape) {
+        if (itemcape) {
+            if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
                 return handler.cast();
             }
         }
-        if (cap == CapabilityEnergy.ENERGY) {
-            if (energycape) {
+        if (energycape) {
+            if (cap == CapabilityEnergy.ENERGY) {
                 return energy.cast();
             }
         }
-        if (cap == CapabilityHeat.HEAT) {
-            if (heatcape) {
+        if (heatcape) {
+            if (cap == CapabilityHeat.HEAT) {
                 return heat.cast();
             }
         }
-        if (cap == CapabilityWatt.WATT) {
-            if (wattcape) {
+        if (wattcape) {
+            if (cap == CapabilityWatt.WATT) {
                 return watt.cast();
             }
         }
-        if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
-            if (fluidcape) {
+        if (fluidcape) {
+            if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return fluid.cast();
             }
         }
-        if (cap == CapabilityPressure.PRESSURE) {
-            if (pressurecape) {
+        if (pressurecape) {
+            if (cap == CapabilityPressure.PRESSURE) {
                 return pressure.cast();
             }
         }
@@ -156,10 +168,18 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     void setPressureCapacity(int cap) {
         capacityP = cap;
     }
-    void  setMaxPressuretransfer(int cap) {
+    void setMaxPressuretransfer(int cap) {
         maxtransferP = cap;
     }
 
+    void setEnergyCanReceive(boolean can) { EnergyCanReceive = can; }
+    void setEnergyCanSend(boolean can) { EnergyCanSend = can; }
+    void setWattCanReceive(boolean can) { WattCanReceive = can; }
+    void setWattCanSend(boolean can) { WattCanSend = can; }
+    void setHeatCanReceive(boolean can) { HeatCanReceive = can; }
+    void setHeatCanSend(boolean can) { HeatCanSend = can; }
+    void setPressureCanReceive(boolean can) { PressureCanReceive = can; }
+    void setPressureCanSend(boolean can) { PressureCanSend = can; }
 
     public void setTransferAndCapacity(int EnergyCapacity, int MaxEnergyTransfer, int InventorySize, int HeatCapacity, int MaxHeatTransfer, int WattCapacity, int MaxWattTransfer, int FluidCapacity, int FluidTanks, int PressureCapacity, int MaxPressureTransfer){
         setCapacity(EnergyCapacity);
@@ -173,6 +193,19 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
         setFluidTanks(FluidTanks);
         setPressureCapacity(PressureCapacity);
         setMaxPressuretransfer(MaxPressureTransfer);
+    }
+    public void setReceiveAndOrSend(boolean EnergyReceive, boolean EnergySend, boolean WattReceive, boolean WattSend, boolean HeatReceive, boolean HeatSend, boolean PressureReceive, boolean PressureSend) {
+        setEnergyCanReceive(EnergyReceive);
+        setEnergyCanSend(EnergySend);
+        setWattCanReceive(WattReceive);
+        setWattCanSend(WattSend);
+        setHeatCanReceive(HeatReceive);
+        setHeatCanSend(HeatSend);
+        setPressureCanReceive(PressureReceive);
+        setPressureCanSend(PressureSend);
+    }
+    public void setHeatHeat(int heat) {
+        createHeat().setHeat(heat);
     }
 
     private FluidStorages createFluid(){
@@ -197,7 +230,17 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
             return new WattStorages(capacityW, maxtransferW){
                 @Override
                 protected void onWattChanged() {
-                    super.onWattChanged();
+                    setChanged();
+                }
+
+                @Override
+                public boolean canReceive() {
+                    return WattCanReceive;
+                }
+
+                @Override
+                public boolean canSend() {
+                    return WattCanSend;
                 }
             };
         }else {
@@ -211,6 +254,21 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
                 protected void onHeatChanged() {
                     setChanged();
                 }
+
+                @Override
+                public boolean canReceive() {
+                    return HeatCanReceive;
+                }
+
+                @Override
+                public boolean canSend() {
+                    return HeatCanSend;
+                }
+
+                @Override
+                public void setHeat(int heat) {
+                    super.setHeat(heat);
+                }
             };
         }else {
             return null;
@@ -223,6 +281,17 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
                 protected void onEnergyChanged() {
                     setChanged();
                 }
+
+                @Override
+                public boolean canReceive() {
+                    return EnergyCanReceive;
+                }
+
+                @Override
+                public boolean canExtract() {
+                    return EnergyCanSend;
+                }
+
             };
         }else{
             return null;
@@ -234,6 +303,16 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
                 @Override
                 protected void onPressureChanged(){
                     setChanged();
+                }
+
+                @Override
+                public boolean canReceive() {
+                    return PressureCanReceive;
+                }
+
+                @Override
+                public boolean canSend() {
+                    return PressureCanSend;
                 }
             };
         }else {
@@ -264,6 +343,7 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
             return null;
         }
     }
+
 
 
 
@@ -344,6 +424,15 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     public int getMaxHeatStorage(){
         return this.heatHandler.getMaxHeatStored();
     }
+    public void addHeatToStorage(int heat){
+        this.heatHandler.addHeat(heat);
+    }
+    public void setHeatStorage(int heat) {
+        this.heatHandler.setHeat(heat);
+    }
+    public void removeHeatFromStorage(int heat) {
+        this.heatHandler.consumeHeat(heat);
+    }
 
     /* Watt */
     public int getWattStorage(){
@@ -359,6 +448,10 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     }
     public int getMaxEnergyStorage(){
         return this.energyHandler.getMaxEnergyStored();
+    }
+
+    public void removeEnergyFromStorage(int energy) {
+        this.energyHandler.consumeEnergy(energy);
     }
 
     /* Item */

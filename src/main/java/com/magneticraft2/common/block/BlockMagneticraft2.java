@@ -31,13 +31,13 @@ public abstract class BlockMagneticraft2 extends Block implements TOPDriver {
         if (te instanceof TileEntityMagneticraft2){
             TileEntityMagneticraft2 tile = (TileEntityMagneticraft2) te;
             te.getCapability(CapabilityHeat.HEAT).ifPresent(h -> {
-                probeInfo.horizontal(probeInfo.defaultLayoutStyle()).progress(h.getHeatStored() % 100, 100, probeInfo.defaultProgressStyle().suffix(" HEAT").borderColor(0xFF555555));
+                probeInfo.horizontal(probeInfo.defaultLayoutStyle()).progress(h.getHeatStored() + 0 % 100, 100, probeInfo.defaultProgressStyle().suffix(" HEAT").borderColor(0xFF555555));
             });
             te.getCapability(CapabilityWatt.WATT).ifPresent(h -> {
-                probeInfo.horizontal(probeInfo.defaultLayoutStyle()).progress(h.getWattStored() % 100, 100, probeInfo.defaultProgressStyle().suffix(" WATT").borderColor(0xFF555555));
+                probeInfo.horizontal(probeInfo.defaultLayoutStyle()).progress(h.getWattStored() + 0 % 100, 100, probeInfo.defaultProgressStyle().suffix(" WATT").borderColor(0xFF555555));
             });
             te.getCapability(CapabilityPressure.PRESSURE).ifPresent(h -> {
-                probeInfo.horizontal(probeInfo.defaultLayoutStyle()).progress(h.getPressureStored() % 100, 100, probeInfo.defaultProgressStyle().suffix(" PSI").borderColor(0xFF555555));
+                probeInfo.horizontal(probeInfo.defaultLayoutStyle()).progress(h.getPressureStored() + 0 % 100, 100, probeInfo.defaultProgressStyle().suffix(" PSI").borderColor(0xFF555555));
             });
         }
     }

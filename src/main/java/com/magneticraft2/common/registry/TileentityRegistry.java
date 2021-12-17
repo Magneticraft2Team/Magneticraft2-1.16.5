@@ -1,6 +1,7 @@
 package com.magneticraft2.common.registry;
 
 import com.magneticraft2.common.tile.conveyor.TileEntityConveyor;
+import com.magneticraft2.common.tile.devtiles.InfiniteHeatTile;
 import com.magneticraft2.common.tile.machines.heat.HeatGeneratorTile;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
@@ -20,6 +21,11 @@ public class TileentityRegistry {
             return TileEntityType.Builder.of(factory, block.get()).build(null);
         });
     }
+
+    /*
+     * Dev tools
+     */
+    public static final RegistryObject<TileEntityType<InfiniteHeatTile>> Tile_DevT1_Heat_inf = register("infheat", InfiniteHeatTile::new, BlockRegistry.DevT1_Heat_inf);
 
     /**
      * none multiblock tiles

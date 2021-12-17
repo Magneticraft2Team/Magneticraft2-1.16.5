@@ -1,6 +1,7 @@
 package com.magneticraft2.common.registry;
 
 import com.magneticraft2.common.block.conveyor.BlockConveyor;
+import com.magneticraft2.common.block.devblocks.InfiniteHeatBlock;
 import com.magneticraft2.common.block.machines.heat.HeatGeneratorBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -23,7 +24,12 @@ public class BlockRegistry {
         return ret;
     }
 
-    /**
+    /*
+     * Dev tools
+     */
+    public static final RegistryObject<Block> DevT1_Heat_inf = register("infheat", () -> new InfiniteHeatBlock(AbstractBlock.Properties.of(Material.METAL).strength(3.5F).noOcclusion().requiresCorrectToolForDrops()));
+
+    /*
      * None MB blocks
      */
     public static final RegistryObject<Block> Block_Conveyor = register("conveyor", () -> new BlockConveyor(AbstractBlock.Properties.of(Material.METAL).strength(3.5F).noOcclusion().requiresCorrectToolForDrops()));
@@ -31,7 +37,7 @@ public class BlockRegistry {
     //public static final RegistryObject<Block> test = register("test", () -> new testBlockfortestTile(AbstractBlock.Properties.of(Material.METAL).strength(3.5F).noOcclusion().requiresCorrectToolForDrops()));
 
 
-    //Some cable stuff (prop never gonna be used=
+    //Some cable stuff (prop never going to be used)
     public static void registerBlocks(RegistryEvent.Register<Block> event) {
         event.getRegistry().registerAll();
     }

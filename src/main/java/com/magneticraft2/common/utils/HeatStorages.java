@@ -2,6 +2,7 @@ package com.magneticraft2.common.utils;
 
 import com.magneticraft2.common.systems.heat.HeatStorage;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class HeatStorages extends HeatStorage implements INBTSerializable<CompoundNBT> {
