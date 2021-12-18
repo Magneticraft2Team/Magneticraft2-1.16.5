@@ -2,21 +2,21 @@ package com.magneticraft2.common.systems.heat;
 
 public class HeatStorage implements IHeatStorage{
 
-    protected int heat;
-    protected int capacity;
-    protected int maxReceive;
-    protected int maxExtract;
+    protected double heat;
+    protected double capacity;
+    protected double maxReceive;
+    protected double maxExtract;
 
-    public HeatStorage(int capacity) {
+    public HeatStorage(double capacity) {
         this(capacity,capacity,capacity,0);
     }
-    public HeatStorage(int capacity, int maxTransfer){
+    public HeatStorage(double capacity, double maxTransfer){
         this(capacity,maxTransfer,maxTransfer,0);
     }
-    public HeatStorage(int capacity, int maxReceive, int maxExtract){
+    public HeatStorage(double capacity, double maxReceive, double maxExtract){
         this(capacity,maxReceive,maxExtract,0);
     }
-    public HeatStorage(int capacity, int maxReceive, int maxExtract, int heat){
+    public HeatStorage(double capacity, double maxReceive, double maxExtract, double heat){
         this.capacity = capacity;
         this.maxReceive = maxReceive;
         this.maxExtract = maxExtract;
@@ -24,32 +24,32 @@ public class HeatStorage implements IHeatStorage{
     }
 
     @Override
-    public int receiveHeat(int maxReceive, boolean simulate) {
+    public double receiveHeat(double maxReceive, boolean simulate) {
         if (!canReceive())
             return 0;
-        int heatReceived = Math.min(capacity - heat, Math.min(this.maxReceive,maxReceive));
+        double heatReceived = Math.min(capacity - heat, Math.min(this.maxReceive,maxReceive));
         if (!simulate)
             heat += heatReceived;
         return heatReceived;
     }
 
     @Override
-    public int extractHeat(int maxExtract, boolean simulate) {
+    public double extractHeat(double maxExtract, boolean simulate) {
         if (!canReceive())
             return 0;
-        int heatExtracted = Math.min(heat, Math.min(this.maxExtract,maxExtract));
+        double heatExtracted = Math.min(heat, Math.min(this.maxExtract,maxExtract));
         if (!simulate)
             heat -= heatExtracted;
         return heatExtracted;
     }
 
     @Override
-    public int getHeatStored() {
+    public double getHeatStored() {
         return heat;
     }
 
     @Override
-    public int getMaxHeatStored() {
+    public double getMaxHeatStored() {
         return capacity;
     }
 

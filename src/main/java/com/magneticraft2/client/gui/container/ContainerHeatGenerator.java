@@ -106,13 +106,13 @@ public class ContainerHeatGenerator extends Container {
         addDataSlot(new IntReferenceHolder() {
             @Override
             public int get() {
-                return getHeat() & 0xffff;
+                return (int) getHeat() & 0xffff;
             }
 
             @Override
             public void set(int value) {
                 tileEntity.getCapability(CapabilityHeat.HEAT).ifPresent(h -> {
-                    int heatStored = h.getHeatStored() & 0xffff0000;
+                    double heatStored = (int) h.getHeatStored() & 0xffff0000;
                     ((HeatStorages)h).setHeat(heatStored + (value & 0xffff));
                 });
             }
@@ -120,14 +120,14 @@ public class ContainerHeatGenerator extends Container {
         addDataSlot(new IntReferenceHolder() {
             @Override
             public int get() {
-                return (getHeat() >> 16) & 0xffff;
+                return ((int)getHeat() >> 16) & 0xffff;
             }
 
             @Override
             public void set(int value) {
                 tileEntity.getCapability(CapabilityHeat.HEAT).ifPresent(h -> {
-                    int heatStored = h.getHeatStored() & 0x0000ffff;
-                    ((HeatStorages)h).setHeat(heatStored | (value << 16));
+                    double heatStored = (int) h.getHeatStored() & 0x0000ffff;
+                    ((HeatStorages)h).setHeat((int) heatStored | (value << 16));
                 });
             }
         });
@@ -145,10 +145,10 @@ public class ContainerHeatGenerator extends Container {
     }
 
 
-    public int getHeat(){
-        return tileEntity.getCapability(CapabilityHeat.HEAT).map(IHeatStorage::getHeatStored).orElse(0);
+    public double getHeat(){
+        return tileEntity.getCapability(CapabilityHeat.HEAT).map(IHeatStorage::getHeatStored).orElse(Double.valueOf(0));
     }
-    public int getHeatLimit(){
-        return tileEntity.getCapability(CapabilityHeat.HEAT).map(IHeatStorage::getMaxHeatStored).orElse(0);
+    public double getHeatLimit(){
+        return tileEntity.getCapability(CapabilityHeat.HEAT).map(IHeatStorage::getMaxHeatStored).orElse(Double.valueOf(0));
     }
 }

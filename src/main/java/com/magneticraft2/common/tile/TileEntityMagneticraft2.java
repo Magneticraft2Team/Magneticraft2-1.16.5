@@ -4,11 +4,11 @@ import com.magneticraft2.common.systems.heat.CapabilityHeat;
 import com.magneticraft2.common.systems.heat.IHeatStorage;
 import com.magneticraft2.common.systems.pressure.CapabilityPressure;
 import com.magneticraft2.common.systems.pressure.IPressureStorage;
-import com.magneticraft2.common.systems.pressure.PressureStorage;
 import com.magneticraft2.common.systems.watt.CapabilityWatt;
 import com.magneticraft2.common.systems.watt.IWattStorage;
 import com.magneticraft2.common.utils.*;
 import net.minecraft.block.BlockState;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -33,8 +33,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
-public abstract class TileEntityMagneticraft2 extends TileEntity implements ITickableTileEntity, IAnimatable{
+public abstract class TileEntityMagneticraft2 extends TileEntity implements ITickableTileEntity, IAnimatable, INamedContainerProvider {
     public static final Logger LOGGER = LogManager.getLogger();
+    public INamedContainerProvider containerProvider;
+
     /* Energy */
     private static Integer capacity;
     private static Integer maxtransfer;
@@ -204,7 +206,7 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
         setPressureCanReceive(PressureReceive);
         setPressureCanSend(PressureSend);
     }
-    public void setHeatHeat(int heat) {
+    public void setHeatHeat(double heat) {
         createHeat().setHeat(heat);
     }
 
@@ -266,7 +268,7 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
                 }
 
                 @Override
-                public void setHeat(int heat) {
+                public void setHeat(double heat) {
                     super.setHeat(heat);
                 }
             };
@@ -387,6 +389,7 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
         if (itemcape) {
 //            tag.put("inv", itemHandler.serializeNBT());
             itemHandler.deserializeNBT(tag.getCompound("inv"));
+
         }
         if (energycape) {
 //            tag.put("energy", energyHandler.serializeNBT());
@@ -418,19 +421,19 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
      */
 
     /* Heat */
-    public int getHeatStorage(){
+    public double getHeatStorage(){
         return this.heatHandler.getHeatStored();
     }
-    public int getMaxHeatStorage(){
+    public double getMaxHeatStorage(){
         return this.heatHandler.getMaxHeatStored();
     }
-    public void addHeatToStorage(int heat){
+    public void addHeatToStorage(double heat){
         this.heatHandler.addHeat(heat);
     }
-    public void setHeatStorage(int heat) {
+    public void setHeatStorage(double heat) {
         this.heatHandler.setHeat(heat);
     }
-    public void removeHeatFromStorage(int heat) {
+    public void removeHeatFromStorage(double heat) {
         this.heatHandler.consumeHeat(heat);
     }
 
@@ -492,7 +495,6 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     public boolean getWattCap(){
         return wattcape;
     }
-
     public boolean getPressureCap(){
         return pressurecape;
     }

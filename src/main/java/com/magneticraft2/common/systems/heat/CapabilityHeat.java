@@ -1,7 +1,9 @@
 package com.magneticraft2.common.systems.heat;
 
+import net.minecraft.nbt.DoubleNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.LongNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -19,7 +21,7 @@ public class CapabilityHeat {
             @Nullable
             @Override
             public INBT writeNBT(Capability<IHeatStorage> capability, IHeatStorage instance, Direction side) {
-                return IntNBT.valueOf(instance.getHeatStored());
+                return DoubleNBT.valueOf(instance.getHeatStored());
             }
 
             @Override

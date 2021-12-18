@@ -45,19 +45,7 @@ public class HeatGeneratorBlock extends BlockMagneticraft2 {
         if (!world.isClientSide) {
             TileEntity tileEntity = world.getBlockEntity(pos);
             if (tileEntity instanceof TileEntityMagneticraft2) {
-                INamedContainerProvider containerProvider = new INamedContainerProvider() {
-                    @Override
-                    public ITextComponent getDisplayName() {
-                        return new TranslationTextComponent("screen.magneticraft2.heatgenerator");
-                    }
-
-                    @Nullable
-                    @Override
-                    public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
-                        return new ContainerHeatGenerator(i,world,pos,playerInventory,playerEntity);
-                    }
-                };
-                NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider, tileEntity.getBlockPos());
+                NetworkHooks.openGui((ServerPlayerEntity) player, ((TileEntityMagneticraft2) tileEntity).containerProvider, tileEntity.getBlockPos());
             }
         }
         return ActionResultType.SUCCESS;

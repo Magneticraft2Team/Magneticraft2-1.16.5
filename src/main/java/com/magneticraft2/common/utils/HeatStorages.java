@@ -6,23 +6,23 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class HeatStorages extends HeatStorage implements INBTSerializable<CompoundNBT> {
-    public HeatStorages(int capacity, int maxTransfer) {
+    public HeatStorages(long capacity, long maxTransfer) {
         super(capacity, maxTransfer);
     }
     protected void onHeatChanged() {
     }
-    public void setHeat(int heat) {
+    public void setHeat(double heat) {
         this.heat = heat;
         onHeatChanged();
     }
-    public void addHeat(int heat) {
+    public void addHeat(double heat) {
         this.heat += heat;
         if (this.heat > getMaxHeatStored()) {
             this.heat = getHeatStored();
         }
         onHeatChanged();
     }
-    public void consumeHeat(int heat) {
+    public void consumeHeat(double heat) {
         this.heat -= heat;
         if (this.heat < 0) {
             this.heat = 0;
@@ -33,7 +33,7 @@ public class HeatStorages extends HeatStorage implements INBTSerializable<Compou
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT tag = new CompoundNBT();
-        tag.putInt("heat", getHeatStored());
+        tag.putDouble("heat", getHeatStored());
         return tag;
     }
 
