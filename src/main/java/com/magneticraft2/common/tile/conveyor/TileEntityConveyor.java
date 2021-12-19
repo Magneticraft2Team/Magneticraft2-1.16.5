@@ -79,14 +79,16 @@ public class TileEntityConveyor extends TileEntity implements ITickableTileEntit
             }
             if (facing.getAxis() == Direction.Axis.X && (normalizedZ < 0.4 || normalizedZ > 0.6)) {
                 //centralize Z
-                entity.setPos(entity.getX(), entity.getY(), Math.floor(entity.getX()) + 0.5);
+
+                entity.setPos(entity.getX(), entity.getY(), Math.floor(entity.getZ()) + 0.5);
+
             }
         }
         if (type.isVertical()) {
             double hackEdge = 0.1;
             if (normalizedX < hackEdge || normalizedZ < hackEdge
                     || normalizedX > 1 - hackEdge || normalizedZ > 1 - hackEdge) {
-                magneticraft2.LOGGER.info("jump hacks " + entity);
+//                magneticraft2.LOGGER.info("jump hacks " + entity);
                 entity.setPos(entity.getX(), entity.getY() + .2, entity.getZ());
             }
             ySpeed = speed * 1.3;

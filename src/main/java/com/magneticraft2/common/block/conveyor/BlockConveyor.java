@@ -6,18 +6,29 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -29,6 +40,7 @@ import java.util.stream.Collectors;
 import net.minecraft.block.AbstractBlock.Properties;
 
 public class BlockConveyor extends Block {
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     private static final int MAX_CONNECTED_UPDATE = 16;
     //main flat shape
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
@@ -67,6 +79,7 @@ public class BlockConveyor extends Block {
 
     public BlockConveyor(Properties properties) {
         super(properties);
+        registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
     }
     public static VoxelShape rot(final VoxelShape shape) {
         double x1 = shape.min(Direction.Axis.X), x2 = shape.max(Direction.Axis.X);
@@ -131,7 +144,6 @@ public class BlockConveyor extends Block {
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         if (state.getValue(TYPE) == ConveyorType.UP) {
-            //      Direction facing = state.get(BlockStateProperties.HORIZONTAL_FACING);
             switch (facing) {
                 case EAST:
                     return ANGLEEAST;
@@ -165,14 +177,98 @@ public class BlockConveyor extends Block {
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING).add(SPEED).add(TYPE);
+    public boolean useShapeForLightOcclusion(BlockState state) {
+        return state.getValue(TYPE).isVertical();
     }
 
     @Override
-    public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        worldIn.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.HORIZONTAL_FACING, placer != null ? placer.getDirection() : Direction.NORTH).setValue(SPEED, ConveyorSpeed.SLOWEST).setValue(TYPE, ConveyorType.STRAIGHT));
-        super.setPlacedBy(worldIn, pos, state, placer, stack);
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+        return state.getValue(TYPE).isVertical();
+    }
+
+    private BlockState getClosestConnected(World world, BlockPos pos){
+        for (Direction d : Direction.values()) {
+            //
+            BlockPos offset = pos.offset(d.getNormal());
+            BlockState here = world.getBlockState(offset);
+            if (here.getBlock() == this) {
+                return here;
+            }
+        }
+        return null;
+    }
+
+    private void setConnectedSpeed(World world, BlockPos pos, ConveyorSpeed speedIn, int maxRecursive) {
+        if (maxRecursive > MAX_CONNECTED_UPDATE) {
+            return;
+        }
+        for (Direction d : Direction.values()) {
+            //
+            BlockPos offset = pos.offset(d.getNormal());
+            BlockState here = world.getBlockState(offset);
+            if (here.getBlock() == this) {
+                if (world.setBlockAndUpdate(offset, here.setValue(SPEED, speedIn))) {
+                    maxRecursive++;
+                    this.setConnectedSpeed(world, offset, speedIn, maxRecursive);
+                }
+            }
+        }
+    }
+
+
+
+
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(BlockStateProperties.HORIZONTAL_FACING).add(SPEED).add(TYPE).add(WATERLOGGED);
+    }
+
+    @Override
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+        ConveyorSpeed speed = ConveyorSpeed.MEDIUM;
+        ConveyorType type = ConveyorType.STRAIGHT;
+        BlockState nearby = getClosestConnected(world, pos);
+        if (nearby != null) {
+            speed = nearby.getValue(SPEED);
+        }
+        Direction facing = placer != null ? placer.getDirection() : Direction.NORTH;
+        world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.HORIZONTAL_FACING, facing).setValue(SPEED, speed).setValue(TYPE, type));
+        super.setPlacedBy(world, pos, state, placer, stack);
+
+//        world.setBlockAndUpdate(pos, state.setValue(BlockStateProperties.HORIZONTAL_FACING, placer != null ? placer.getDirection() : Direction.NORTH).setValue(SPEED, ConveyorSpeed.MEDIUM).setValue(TYPE, ConveyorType.STRAIGHT));
+//        super.setPlacedBy(world, pos, state, placer, stack);
+    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        return super.getStateForPlacement(context)
+                .setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER);
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
+        Item heldItem = player.getItemInHand(hand).getItem();
+        if (heldItem == (Items.STICK)) {
+            AbstractMap.SimpleImmutableEntry<ConveyorType, Direction> nextState = nextConnectedState(state.getValue(TYPE), state.getValue(BlockStateProperties.HORIZONTAL_FACING));
+            boolean success = world.setBlockAndUpdate(pos, state.setValue(TYPE, nextState.getKey()).setValue(BlockStateProperties.HORIZONTAL_FACING, nextState.getValue()));
+            if (success) {
+                return ActionResultType.SUCCESS;
+            }
+        }else if (heldItem == Items.REDSTONE_TORCH) {
+            //speed toggle
+            ConveyorSpeed speed = state.getValue(SPEED);
+            if (world.setBlockAndUpdate(pos, state.setValue(SPEED, speed.getNext()))) {
+                this.setConnectedSpeed(world, pos, speed.getNext(), 0);
+                return ActionResultType.SUCCESS;
+            }
+        }
+        return super.use(state,world,pos,player,hand,hit);
     }
 
     @Override
@@ -184,6 +280,14 @@ public class BlockConveyor extends Block {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new TileEntityConveyor();
+    }
+
+    @Override
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+        if (stateIn.getValue(WATERLOGGED)) {
+            worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
+        }
+        return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
 
     public static AbstractMap.SimpleImmutableEntry<ConveyorType, Direction> nextConnectedState(ConveyorType t, Direction d) {
@@ -198,6 +302,14 @@ public class BlockConveyor extends Block {
 
     private static AbstractMap.SimpleImmutableEntry<ConveyorType, Direction> nextState(List<AbstractMap.SimpleImmutableEntry<ConveyorType, Direction>> list, int index) {
         return list.get(nextIndex(list, index));
+    }
+    public static AbstractMap.SimpleImmutableEntry<ConveyorType, Direction> nextState(ConveyorType t, Direction d) {
+        AbstractMap.SimpleImmutableEntry<ConveyorType, Direction> pair = new AbstractMap.SimpleImmutableEntry<>(t, d);
+        if (STATE_PAIRS.contains(pair)) {
+            int index = STATE_PAIRS.indexOf(pair) + 1;
+            return nextState(STATE_PAIRS, index);
+        }
+        return pair;
     }
 
     private static int nextIndex(List<AbstractMap.SimpleImmutableEntry<ConveyorType, Direction>> list, int index) {

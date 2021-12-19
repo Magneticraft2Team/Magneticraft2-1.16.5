@@ -31,7 +31,7 @@ public class HeatGeneratorTile extends TileEntityMagneticraft2 {
             if (getEnergyStorage() < 1) {
                 if (level.getGameTime() % 15 == 0) {
                     if (this.getHeatStorage() > 1) {
-                        this.removeHeatFromStorage(1);
+                        this.removeHeatFromStorage(1.3);
                     }
                 }
                 return;
