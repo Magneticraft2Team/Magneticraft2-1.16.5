@@ -1,28 +1,28 @@
 {
   "variants": {
 
-    "facing=north,type=straight": { "model": "magneticraft2:parent/conveyor_straight" },
-    "facing=east,type=straight": { "model": "magneticraft2:parent/conveyor_straight" ,"y":90},
-    "facing=south,type=straight": { "model": "magneticraft2:parent/conveyor_straight","y":180 },
-    "facing=west,type=straight": { "model": "magneticraft2:parent/conveyor_straight","y":270 },
+    "facing=north,type=straight": { "model": "magneticraft2:block/conveyor/conveyor_straight" },
+    "facing=east,type=straight": { "model": "magneticraft2:block/conveyor/conveyor_straight" ,"y":90},
+    "facing=south,type=straight": { "model": "magneticraft2:block/conveyor/conveyor_straight","y":180 },
+    "facing=west,type=straight": { "model": "magneticraft2:block/conveyor/conveyor_straight","y":270 },
 
-    "facing=north,type=down": { "model": "magneticraft2:parent/conveyor_down" },
-    "facing=east,type=down": { "model": "magneticraft2:parent/conveyor_down" ,"y":90},
-    "facing=south,type=down": { "model": "magneticraft2:parent/conveyor_down","y":180 },
-    "facing=west,type=down": { "model": "magneticraft2:parent/conveyor_down","y":270 },
-    "facing=north,type=up": { "model": "magneticraft2:parent/conveyor_up"   },
-    "facing=east,type=up": { "model": "magneticraft2:parent/conveyor_up" ,"y":90},
-    "facing=south,type=up": { "model": "magneticraft2:parent/conveyor_up","y":180 },
-    "facing=west,type=up": { "model": "magneticraft2:parent/conveyor_up" ,"y":270 },
+    "facing=north,type=down": { "model": "magneticraft2:block/conveyor/conveyor_down" },
+    "facing=east,type=down": { "model": "magneticraft2:block/conveyor/conveyor_down" ,"y":90},
+    "facing=south,type=down": { "model": "magneticraft2:block/conveyor/conveyor_down","y":180 },
+    "facing=west,type=down": { "model": "magneticraft2:block/conveyor/conveyor_down","y":270 },
+    "facing=north,type=up": { "model": "magneticraft2:block/conveyor/conveyor_up"   },
+    "facing=east,type=up": { "model": "magneticraft2:block/conveyor/conveyor_up" ,"y":90},
+    "facing=south,type=up": { "model": "magneticraft2:block/conveyor/conveyor_up","y":180 },
+    "facing=west,type=up": { "model": "magneticraft2:block/conveyor/conveyor_up" ,"y":270 },
 
-    "facing=north,type=corner_left": { "model": "magneticraft2:parent/conveyor_corner_left" ,"y":90},
-    "facing=east,type=corner_left": { "model": "magneticraft2:parent/conveyor_corner_left" ,"y":180},
-    "facing=south,type=corner_left": { "model": "magneticraft2:parent/conveyor_corner_left" ,"y":270 },
-    "facing=west,type=corner_left": { "model": "magneticraft2:parent/conveyor_corner_left","y":0 },
-    "facing=north,type=corner_right": { "model": "magneticraft2:parent/conveyor_corner_right","y":270 },
-    "facing=east,type=corner_right": { "model": "magneticraft2:parent/conveyor_corner_right" ,"y":0},
-    "facing=south,type=corner_right": { "model": "magneticraft2:parent/conveyor_corner_right","y":90 },
-    "facing=west,type=corner_right": { "model": "magneticraft2:parent/conveyor_corner_right","y":180 }
+    "facing=north,type=corner_left": { "model": "magneticraft2:block/conveyor/conveyor_corner_left" ,"y":90},
+    "facing=east,type=corner_left": { "model": "magneticraft2:block/conveyor/conveyor_corner_left" ,"y":180},
+    "facing=south,type=corner_left": { "model": "magneticraft2:block/conveyor/conveyor_corner_left" ,"y":270 },
+    "facing=west,type=corner_left": { "model": "magneticraft2:block/conveyor/conveyor_corner_left","y":0 },
+    "facing=north,type=corner_right": { "model": "magneticraft2:block/conveyor/conveyor_corner_right","y":270 },
+    "facing=east,type=corner_right": { "model": "magneticraft2:block/conveyor/conveyor_corner_right" ,"y":0},
+    "facing=south,type=corner_right": { "model": "magneticraft2:block/conveyor/conveyor_corner_right","y":90 },
+    "facing=west,type=corner_right": { "model": "magneticraft2:block/conveyor/conveyor_corner_right","y":180 }
 
 
   }

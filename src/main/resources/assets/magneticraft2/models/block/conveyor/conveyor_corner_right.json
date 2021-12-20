@@ -1,0 +1,6 @@
+{
+  "parent": "magneticraft2:parent/conveyor_corner_right",
+  "textures": {
+    "texture": "magneticraft2:blocks/conveyor/conveyor_corner"
+  }
+}
