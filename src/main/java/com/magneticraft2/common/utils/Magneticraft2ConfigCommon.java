@@ -2,7 +2,7 @@ package com.magneticraft2.common.utils;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public final class Magneticraft2Config {
+public final class Magneticraft2ConfigCommon {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 

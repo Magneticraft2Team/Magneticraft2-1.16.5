@@ -3,10 +3,12 @@ package com.magneticraft2.common;
 
 import com.magneticraft2.common.multiblock.generic.MultiblockController;
 import com.magneticraft2.common.multiblock.generic.MultiblockTile;
+import com.magneticraft2.common.network.Magneticraft2Network;
 import com.magneticraft2.common.registry.*;
 import com.magneticraft2.common.systems.heat.CapabilityHeat;
 import com.magneticraft2.common.systems.watt.CapabilityWatt;
-import com.magneticraft2.common.utils.Magneticraft2Config;
+import com.magneticraft2.common.utils.Magneticraft2ConfigCommon;
+import com.magneticraft2.common.world.ore.oreGen;
 import com.magneticraft2.compatibility.TOP.TOPCompatibility;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -16,7 +18,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -64,18 +65,19 @@ public class magneticraft2 {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ContainerAndScreenRegistry::Screen);
         //FMLJavaModLoadingContext.get().getModEventBus().addListener(TagProviders::gatherData);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetups);
-        //MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, OreGeneration::generateOres);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, oreGen::generateOres);
         MinecraftForge.EVENT_BUS.register(this);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(magneticraft2.this::clientSetup);
         });
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Magneticraft2Config.SPEC, "magneticraft2-common.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Magneticraft2ConfigCommon.SPEC, "magneticraft2-common.toml");
     }
 
     public void commonSetups(FMLCommonSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new BlockEvents());
         FinalRegistry.init(event);
+        Magneticraft2Network.init();
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
