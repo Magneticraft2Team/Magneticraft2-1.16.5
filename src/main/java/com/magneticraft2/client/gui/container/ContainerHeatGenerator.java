@@ -112,7 +112,7 @@ public class ContainerHeatGenerator extends Container {
             @Override
             public void set(int value) {
                 tileEntity.getCapability(CapabilityHeat.HEAT).ifPresent(h -> {
-                    double heatStored = (int) h.getHeatStored() & 0xffff0000;
+                    int heatStored = h.getHeatStored() & 0xffff0000;
                     ((HeatStorages)h).setHeat(heatStored + (value & 0xffff));
                 });
             }
@@ -126,8 +126,8 @@ public class ContainerHeatGenerator extends Container {
             @Override
             public void set(int value) {
                 tileEntity.getCapability(CapabilityHeat.HEAT).ifPresent(h -> {
-                    double heatStored = (int) h.getHeatStored() & 0x0000ffff;
-                    ((HeatStorages)h).setHeat((int) heatStored | (value << 16));
+                    int heatStored = h.getHeatStored() & 0x0000ffff;
+                    ((HeatStorages)h).setHeat(heatStored | (value << 16));
                 });
             }
         });
@@ -146,9 +146,9 @@ public class ContainerHeatGenerator extends Container {
 
 
     public double getHeat(){
-        return tileEntity.getCapability(CapabilityHeat.HEAT).map(IHeatStorage::getHeatStored).orElse(Double.valueOf(0));
+        return tileEntity.getCapability(CapabilityHeat.HEAT).map(IHeatStorage::getHeatStored).orElse(0);
     }
     public double getHeatLimit(){
-        return tileEntity.getCapability(CapabilityHeat.HEAT).map(IHeatStorage::getMaxHeatStored).orElse(Double.valueOf(0));
+        return tileEntity.getCapability(CapabilityHeat.HEAT).map(IHeatStorage::getMaxHeatStored).orElse(0);
     }
 }

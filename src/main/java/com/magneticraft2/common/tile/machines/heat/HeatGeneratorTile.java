@@ -18,9 +18,6 @@ public class HeatGeneratorTile extends TileEntityMagneticraft2 {
 
     public HeatGeneratorTile() {
         super(TileentityRegistry.Tile_Heat_Generator.get());
-        setTransferAndCapacity(3000,3000,3,100,3000,100,3000,3000,1,100,3000);
-        shouldHaveCapability(false,true,true,false,false,false);
-        setReceiveAndOrSend(true, false, false,false,false,true,false,false);
         containerProvider = this;
 
     }
@@ -31,7 +28,7 @@ public class HeatGeneratorTile extends TileEntityMagneticraft2 {
             if (getEnergyStorage() < 1) {
                 if (level.getGameTime() % 15 == 0) {
                     if (this.getHeatStorage() > 1) {
-                        this.removeHeatFromStorage(1.3);
+                        this.removeHeatFromStorage(1);
                     }
                 }
                 return;
@@ -68,5 +65,130 @@ public class HeatGeneratorTile extends TileEntityMagneticraft2 {
     @Override
     public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity) {
         return new ContainerHeatGenerator(i,level,getBlockPos(),playerInventory,playerEntity);
+    }
+
+    @Override
+    public Integer capacityE() {
+        return 3000;
+    }
+
+    @Override
+    public Integer maxtransferE() {
+        return 200;
+    }
+
+    @Override
+    public Integer capacityH() {
+        return 100;
+    }
+
+    @Override
+    public Integer maxtransferH() {
+        return 200;
+    }
+
+    @Override
+    public Integer capacityW() {
+        return 0;
+    }
+
+    @Override
+    public Integer maxtransferW() {
+        return 0;
+    }
+
+    @Override
+    public Integer capacityF() {
+        return 0;
+    }
+
+    @Override
+    public Integer tanks() {
+        return 0;
+    }
+
+    @Override
+    public Integer invsize() {
+        return 0;
+    }
+
+    @Override
+    public Integer capacityP() {
+        return 0;
+    }
+
+    @Override
+    public Integer maxtransferP() {
+        return 0;
+    }
+
+    @Override
+    public boolean itemcape() {
+        return false;
+    }
+
+    @Override
+    public boolean energycape() {
+        return true;
+    }
+
+    @Override
+    public boolean heatcape() {
+        return true;
+    }
+
+    @Override
+    public boolean wattcape() {
+        return false;
+    }
+
+    @Override
+    public boolean fluidcape() {
+        return false;
+    }
+
+    @Override
+    public boolean pressurecape() {
+        return false;
+    }
+
+    @Override
+    public boolean HeatCanReceive() {
+        return false;
+    }
+
+    @Override
+    public boolean HeatCanSend() {
+        return true;
+    }
+
+    @Override
+    public boolean WattCanReceive() {
+        return false;
+    }
+
+    @Override
+    public boolean WattCanSend() {
+        return false;
+    }
+
+    @Override
+    public boolean EnergyCanReceive() {
+        return true;
+    }
+
+    @Override
+    public boolean EnergyCanSend() {
+        return false;
+    }
+
+    @Override
+    public boolean PressureCanReceive() {
+        return false;
+    }
+
+    @Override
+    public boolean PressureCanSend() {
+        return false;
     }
 }

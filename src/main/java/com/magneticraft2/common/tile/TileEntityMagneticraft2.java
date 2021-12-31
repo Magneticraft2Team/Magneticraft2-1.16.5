@@ -1,5 +1,6 @@
 package com.magneticraft2.common.tile;
 
+import com.magneticraft2.common.magneticraft2;
 import com.magneticraft2.common.systems.heat.CapabilityHeat;
 import com.magneticraft2.common.systems.heat.IHeatStorage;
 import com.magneticraft2.common.systems.pressure.CapabilityPressure;
@@ -38,22 +39,23 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     public INamedContainerProvider containerProvider;
 
     /* Energy */
-    private static Integer capacity;
-    private static Integer maxtransfer;
+
+    public abstract Integer capacityE();
+    public abstract Integer maxtransferE();
     /* Heat */
-    private static Integer capacityH;
-    private static Integer maxtransferH;
+    public abstract Integer capacityH();
+    public abstract Integer maxtransferH();
     /* Watt */
-    private static Integer capacityW;
-    private static Integer maxtransferW;
+    public abstract Integer capacityW();
+    public abstract Integer maxtransferW();
     /* Fluid */
-    private static Integer capacityF;
-    private static Integer tanks;
+    public abstract Integer capacityF();
+    public abstract Integer tanks();
     /* Inv */
-    private static Integer invsize;
+    public abstract Integer invsize();
     /* Pressure */
-    private static Integer capacityP;
-    private static Integer maxtransferP;
+    public abstract Integer capacityP();
+    public abstract Integer maxtransferP();
 
 
 
@@ -65,21 +67,21 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     private FluidStorages fluidHandler = createFluid(); //Fluid
     private PressureStorages pressureHandler = createPressure(); //Pressure
 
-    static boolean itemcape; //Is the TileEntity capable of Item handling
-    static boolean energycape; //Is the TileEntity capable of Energy (RF) handling
-    static boolean heatcape; //Is the TileEntity capable of Heat handling
-    static boolean wattcape; //Is the TileEntity capable of Wattage/Voltage handling
-    static boolean fluidcape; //Is the TileEntity capable of Fluid handling
-    static boolean pressurecape; //Is the TileEntity capable of Pressure handling
+    public abstract boolean itemcape(); //Is the TileEntity capable of Item handling
+    public abstract boolean energycape(); //Is the TileEntity capable of Energy (RF) handling
+    public abstract boolean heatcape(); //Is the TileEntity capable of Heat handling
+    public abstract boolean wattcape(); //Is the TileEntity capable of Wattage/Voltage handling
+    public abstract boolean fluidcape(); //Is the TileEntity capable of Fluid handling
+    public abstract boolean pressurecape(); //Is the TileEntity capable of Pressure handling
 
-    static boolean HeatCanReceive;
-    static boolean HeatCanSend;
-    static boolean WattCanReceive;
-    static boolean WattCanSend;
-    static boolean EnergyCanReceive;
-    static boolean EnergyCanSend;
-    static boolean PressureCanReceive;
-    static boolean PressureCanSend;
+    public abstract boolean HeatCanReceive();
+    public abstract boolean HeatCanSend();
+    public abstract boolean WattCanReceive();
+    public abstract boolean WattCanSend();
+    public abstract boolean EnergyCanReceive();
+    public abstract boolean EnergyCanSend();
+    public abstract boolean PressureCanReceive();
+    public abstract boolean PressureCanSend();
 
     public final AnimationFactory factory = new AnimationFactory(this);
     private LazyOptional<IEnergyStorage> energy = LazyOptional.of(() -> energyHandler); //Creating LazyOptional for Energy (RF)
@@ -91,43 +93,36 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     public TileEntityMagneticraft2(TileEntityType<?> p_i48289_1_) {
         super(p_i48289_1_);
     }
-    public void shouldHaveCapability(boolean itemcaps, boolean energycaps, boolean heatcaps, boolean wattcapes, boolean fluidcapes, boolean pressurecapes){
-        itemcape = itemcaps;
-        energycape = energycaps;
-        heatcape = heatcaps;
-        wattcape = wattcapes;
-        fluidcape = fluidcapes;
-        pressurecape = pressurecapes;
-    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (itemcape) {
+        if (itemcape()) {
             if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
                 return handler.cast();
             }
         }
-        if (energycape) {
+        if (energycape()) {
             if (cap == CapabilityEnergy.ENERGY) {
                 return energy.cast();
             }
         }
-        if (heatcape) {
+        if (heatcape()) {
             if (cap == CapabilityHeat.HEAT) {
                 return heat.cast();
             }
         }
-        if (wattcape) {
+        if (wattcape()) {
             if (cap == CapabilityWatt.WATT) {
                 return watt.cast();
             }
         }
-        if (fluidcape) {
+        if (fluidcape()) {
             if (cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY) {
                 return fluid.cast();
             }
         }
-        if (pressurecape) {
+        if (pressurecape()) {
             if (cap == CapabilityPressure.PRESSURE) {
                 return pressure.cast();
             }
@@ -140,87 +135,21 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     /*
      *Energy, Item, Fluid, Pressure & Heat handler
      */
-    void setCapacity(int cap) {
-        capacity = cap;
-    }
-    void setMaxtransfer(int max) {
-        maxtransfer = max;
-    }
-    void setInvsize(int size) {
-        invsize = size;
-    }
-    void setHeatCapacity(int cap) {
-        capacityH = cap;
-    }
-    void setMaxHeattransfer(int cap) {
-        maxtransferH = cap;
-    }
-    void setWattCapacity(int cap) {
-        capacityW = cap;
-    }
-    void setMaxWatttransfer(int cap) {
-        maxtransferW = cap;
-    }
-    void setFluidCapacity(int cap) {
-        capacityF = cap;
-    }
-    void setFluidTanks(int cap) {
-        tanks = cap;
-    }
-    void setPressureCapacity(int cap) {
-        capacityP = cap;
-    }
-    void setMaxPressuretransfer(int cap) {
-        maxtransferP = cap;
-    }
-
-    void setEnergyCanReceive(boolean can) { EnergyCanReceive = can; }
-    void setEnergyCanSend(boolean can) { EnergyCanSend = can; }
-    void setWattCanReceive(boolean can) { WattCanReceive = can; }
-    void setWattCanSend(boolean can) { WattCanSend = can; }
-    void setHeatCanReceive(boolean can) { HeatCanReceive = can; }
-    void setHeatCanSend(boolean can) { HeatCanSend = can; }
-    void setPressureCanReceive(boolean can) { PressureCanReceive = can; }
-    void setPressureCanSend(boolean can) { PressureCanSend = can; }
-
-    public void setTransferAndCapacity(int EnergyCapacity, int MaxEnergyTransfer, int InventorySize, int HeatCapacity, int MaxHeatTransfer, int WattCapacity, int MaxWattTransfer, int FluidCapacity, int FluidTanks, int PressureCapacity, int MaxPressureTransfer){
-        setCapacity(EnergyCapacity);
-        setMaxtransfer(MaxEnergyTransfer);
-        setInvsize(InventorySize);
-        setHeatCapacity(HeatCapacity);
-        setMaxHeattransfer(MaxHeatTransfer);
-        setWattCapacity(WattCapacity);
-        setMaxWatttransfer(MaxWattTransfer);
-        setFluidCapacity(FluidCapacity);
-        setFluidTanks(FluidTanks);
-        setPressureCapacity(PressureCapacity);
-        setMaxPressuretransfer(MaxPressureTransfer);
-    }
-    public void setReceiveAndOrSend(boolean EnergyReceive, boolean EnergySend, boolean WattReceive, boolean WattSend, boolean HeatReceive, boolean HeatSend, boolean PressureReceive, boolean PressureSend) {
-        setEnergyCanReceive(EnergyReceive);
-        setEnergyCanSend(EnergySend);
-        setWattCanReceive(WattReceive);
-        setWattCanSend(WattSend);
-        setHeatCanReceive(HeatReceive);
-        setHeatCanSend(HeatSend);
-        setPressureCanReceive(PressureReceive);
-        setPressureCanSend(PressureSend);
-    }
-    public void setHeatHeat(double heat) {
+    public void setHeatHeat(int heat) {
         createHeat().setHeat(heat);
     }
 
     private FluidStorages createFluid(){
-        if (fluidcape) {
+        if (fluidcape()) {
             return new FluidStorages() {
                 @Override
                 public void setTanks(int tanknumb) {
-                    super.setTanks(tanks);
+                    super.setTanks(tanks());
                 }
 
                 @Override
                 public void setCapacity(int capacity) {
-                    super.setCapacity(capacityF);
+                    super.setCapacity(capacityF());
                 }
             };
         }else {
@@ -228,8 +157,8 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
         }
     }
     private WattStorages createWatt(){
-        if (wattcape) {
-            return new WattStorages(capacityW, maxtransferW){
+        if (wattcape()) {
+            return new WattStorages(capacityW(), maxtransferW()){
                 @Override
                 protected void onWattChanged() {
                     setChanged();
@@ -237,12 +166,12 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
 
                 @Override
                 public boolean canReceive() {
-                    return WattCanReceive;
+                    return WattCanReceive();
                 }
 
                 @Override
                 public boolean canSend() {
-                    return WattCanSend;
+                    return WattCanSend();
                 }
             };
         }else {
@@ -250,8 +179,8 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
         }
     }
     private HeatStorages createHeat(){
-        if (heatcape) {
-            return new HeatStorages(capacityH, maxtransferH){
+        if (heatcape()) {
+            return new HeatStorages(capacityH(), maxtransferH()){
                 @Override
                 protected void onHeatChanged() {
                     setChanged();
@@ -259,16 +188,16 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
 
                 @Override
                 public boolean canReceive() {
-                    return HeatCanReceive;
+                    return HeatCanReceive();
                 }
 
                 @Override
                 public boolean canSend() {
-                    return HeatCanSend;
+                    return HeatCanSend();
                 }
 
                 @Override
-                public void setHeat(double heat) {
+                public void setHeat(int heat) {
                     super.setHeat(heat);
                 }
             };
@@ -277,8 +206,8 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
         }
     }
     private EnergyStorages createEnergy() {
-        if (energycape) {
-            return new EnergyStorages(capacity, maxtransfer) {
+        if (energycape()) {
+            return new EnergyStorages(capacityE(), maxtransferE()) {
                 @Override
                 protected void onEnergyChanged() {
                     setChanged();
@@ -286,12 +215,12 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
 
                 @Override
                 public boolean canReceive() {
-                    return EnergyCanReceive;
+                    return EnergyCanReceive();
                 }
 
                 @Override
                 public boolean canExtract() {
-                    return EnergyCanSend;
+                    return EnergyCanSend();
                 }
 
             };
@@ -300,8 +229,8 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
         }
     }
     private PressureStorages createPressure() {
-        if (pressurecape) {
-            return new PressureStorages(capacityP, maxtransferP) {
+        if (pressurecape()) {
+            return new PressureStorages(capacityP(), maxtransferP()) {
                 @Override
                 protected void onPressureChanged(){
                     setChanged();
@@ -309,12 +238,12 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
 
                 @Override
                 public boolean canReceive() {
-                    return PressureCanReceive;
+                    return PressureCanReceive();
                 }
 
                 @Override
                 public boolean canSend() {
-                    return PressureCanSend;
+                    return PressureCanSend();
                 }
             };
         }else {
@@ -323,8 +252,8 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     }
 
     private ItemStackHandler createInv() {
-        if (energycape) {
-            return new ItemStackHandler(invsize) {
+        if (energycape()) {
+            return new ItemStackHandler(invsize()) {
                 @Override
                 protected void onContentsChanged(int slot) {
                     setChanged();
@@ -355,59 +284,83 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
 
     @Override
     public CompoundNBT save(CompoundNBT tag) {
-        if (itemcape) {
+        if (itemcape()) {
             //itemHandler.deserializeNBT(tag.getCompound("inv"));
-            tag.put("inv", itemHandler.serializeNBT());
+            try {
+                tag.put("inv", itemHandler.serializeNBT());
+            }catch (Exception e) {
+                if (magneticraft2.devmode)e.printStackTrace();
+            }
         }
-        if (energycape) {
+        if (energycape()) {
             //energyHandler.deserializeNBT(tag.getCompound("energy"));
-            tag.put("energy", energyHandler.serializeNBT());
+            try {
+                tag.put("energy", energyHandler.serializeNBT());
+            }catch (Exception e) {
+                if (magneticraft2.devmode)e.printStackTrace();
+            }
         }
-        if (heatcape) {
+        if (heatcape()) {
             //heatHandler.deserializeNBT(tag.getCompound("heat"));
-            tag.put("heat", heatHandler.serializeNBT());
+            try {
+                tag.put("heat", heatHandler.serializeNBT());
+            }catch (Exception e) {
+                if (magneticraft2.devmode)e.printStackTrace();
+            }
         }
-        if (wattcape) {
+        if (wattcape()) {
             //wattHandler.deserializeNBT(tag.getCompound("watt"));
-            tag.put("watt", wattHandler.serializeNBT());
+            try {
+                tag.put("watt", wattHandler.serializeNBT());
+            }catch (Exception e) {
+                if (magneticraft2.devmode)e.printStackTrace();
+            }
         }
-        if (pressurecape) {
+        if (pressurecape()) {
             //pressureHandler.deserializeNBT(tag.getCompound("pressure"));
-            tag.put("pressure", pressureHandler.serializeNBT());
+            try {
+                tag.put("pressure", pressureHandler.serializeNBT());
+            }catch (Exception e) {
+                if (magneticraft2.devmode)e.printStackTrace();
+            }
         }
-        if (fluidcape) {
+        if (fluidcape()) {
             //fluidHandler.deserializeNBT(tag.getCompound("fluidamount"));
             //fluidHandler.deserializeNBT(tag.getCompound("fluidtype"));
-            tag.put("fluidamount", fluidHandler.serializeNBT());
-            tag.put("fluidtype", fluidHandler.serializeNBT());
+            try {
+                tag.put("fluidamount", fluidHandler.serializeNBT());
+                tag.put("fluidtype", fluidHandler.serializeNBT());
+            }catch (Exception e) {
+                if (magneticraft2.devmode)e.printStackTrace();
+            }
         }
         return super.save(tag);
     }
 
     @Override
     public void load(BlockState state, CompoundNBT tag) {
-        if (itemcape) {
+        if (itemcape()) {
 //            tag.put("inv", itemHandler.serializeNBT());
             itemHandler.deserializeNBT(tag.getCompound("inv"));
 
         }
-        if (energycape) {
+        if (energycape()) {
 //            tag.put("energy", energyHandler.serializeNBT());
             energyHandler.deserializeNBT(tag.getCompound("energy"));
         }
-        if (heatcape) {
+        if (heatcape()) {
 //            tag.put("heat", heatHandler.serializeNBT());
             heatHandler.deserializeNBT(tag.getCompound("heat"));
         }
-        if (wattcape) {
+        if (wattcape()) {
 //            tag.put("watt", wattHandler.serializeNBT());
             wattHandler.deserializeNBT(tag.getCompound("watt"));
         }
-        if (pressurecape) {
+        if (pressurecape()) {
 //            tag.put("pressure", pressureHandler.serializeNBT());
             pressureHandler.deserializeNBT(tag.getCompound("pressure"));
         }
-        if (fluidcape) {
+        if (fluidcape()) {
 //            tag.put("fluidamount", fluidHandler.serializeNBT());
 //            tag.put("fluidtype", fluidHandler.serializeNBT());
             fluidHandler.deserializeNBT(tag.getCompound("fluidamount"));
@@ -421,19 +374,19 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
      */
 
     /* Heat */
-    public double getHeatStorage(){
+    public int getHeatStorage(){
         return this.heatHandler.getHeatStored();
     }
-    public double getMaxHeatStorage(){
+    public int getMaxHeatStorage(){
         return this.heatHandler.getMaxHeatStored();
     }
-    public void addHeatToStorage(double heat){
+    public void addHeatToStorage(int heat){
         this.heatHandler.addHeat(heat);
     }
-    public void setHeatStorage(double heat) {
+    public void setHeatStorage(int heat) {
         this.heatHandler.setHeat(heat);
     }
-    public void removeHeatFromStorage(double heat) {
+    public void removeHeatFromStorage(int heat) {
         this.heatHandler.consumeHeat(heat);
     }
 
@@ -490,13 +443,13 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
      */
 
     public boolean getHeatCap(){
-        return heatcape;
+        return heatcape();
     }
     public boolean getWattCap(){
-        return wattcape;
+        return wattcape();
     }
     public boolean getPressureCap(){
-        return pressurecape;
+        return pressurecape();
     }
 
 }

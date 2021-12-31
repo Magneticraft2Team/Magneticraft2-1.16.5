@@ -15,16 +15,19 @@ import javax.annotation.Nullable;
 public class InfiniteHeatTile extends TileEntityMagneticraft2 {
     public InfiniteHeatTile() {
         super(TileentityRegistry.Tile_DevT1_Heat_inf.get());
-        setTransferAndCapacity(0,0,0,Integer.MAX_VALUE,3000,3000,3000,3000,1,3000,3000);
-        shouldHaveCapability(false,false,true,false,false,false);
-        setReceiveAndOrSend(false, false, false,false,false,true,false,false);
     }
 
 
 
     @Override
     public void tick() {
-
+        if (!level.isClientSide){
+            if (this.getHeatStorage() >= this.getMaxHeatStorage()){
+                this.setHeatHeat(this.getMaxHeatStorage());
+            }else{
+                this.addHeatToStorage(Integer.MAX_VALUE);
+            }
+        }
     }
 
     @Override
@@ -46,5 +49,130 @@ public class InfiniteHeatTile extends TileEntityMagneticraft2 {
     @Override
     public Container createMenu(int p_createMenu_1_, PlayerInventory p_createMenu_2_, PlayerEntity p_createMenu_3_) {
         return null;
+    }
+
+    @Override
+    public Integer capacityE() {
+        return 0;
+    }
+
+    @Override
+    public Integer maxtransferE() {
+        return 0;
+    }
+
+    @Override
+    public Integer capacityH() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public Integer maxtransferH() {
+        return 3000;
+    }
+
+    @Override
+    public Integer capacityW() {
+        return 0;
+    }
+
+    @Override
+    public Integer maxtransferW() {
+        return 0;
+    }
+
+    @Override
+    public Integer capacityF() {
+        return 0;
+    }
+
+    @Override
+    public Integer tanks() {
+        return 0;
+    }
+
+    @Override
+    public Integer invsize() {
+        return 0;
+    }
+
+    @Override
+    public Integer capacityP() {
+        return 0;
+    }
+
+    @Override
+    public Integer maxtransferP() {
+        return 0;
+    }
+
+    @Override
+    public boolean itemcape() {
+        return false;
+    }
+
+    @Override
+    public boolean energycape() {
+        return false;
+    }
+
+    @Override
+    public boolean heatcape() {
+        return true;
+    }
+
+    @Override
+    public boolean wattcape() {
+        return false;
+    }
+
+    @Override
+    public boolean fluidcape() {
+        return false;
+    }
+
+    @Override
+    public boolean pressurecape() {
+        return false;
+    }
+
+    @Override
+    public boolean HeatCanReceive() {
+        return false;
+    }
+
+    @Override
+    public boolean HeatCanSend() {
+        return true;
+    }
+
+    @Override
+    public boolean WattCanReceive() {
+        return false;
+    }
+
+    @Override
+    public boolean WattCanSend() {
+        return false;
+    }
+
+    @Override
+    public boolean EnergyCanReceive() {
+        return false;
+    }
+
+    @Override
+    public boolean EnergyCanSend() {
+        return false;
+    }
+
+    @Override
+    public boolean PressureCanReceive() {
+        return false;
+    }
+
+    @Override
+    public boolean PressureCanSend() {
+        return false;
     }
 }
