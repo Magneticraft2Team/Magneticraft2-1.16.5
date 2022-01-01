@@ -16,6 +16,9 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -37,7 +40,7 @@ import javax.annotation.Nullable;
 public abstract class TileEntityMagneticraft2 extends TileEntity implements ITickableTileEntity, IAnimatable, INamedContainerProvider {
     public static final Logger LOGGER = LogManager.getLogger();
     public INamedContainerProvider containerProvider;
-
+    //Biomes
     /* Energy */
 
     public abstract Integer capacityE();
@@ -135,6 +138,15 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     /*
      *Energy, Item, Fluid, Pressure & Heat handler
      */
+
+    public int getStartHeat(World world, BlockPos pos) {
+        if (world.getBiomeManager().getBiome(pos).getRegistryName().equals(new ResourceLocation("desert"))){
+            return 35;
+        }
+
+        return 0;
+    }
+
     public void setHeatHeat(int heat) {
         createHeat().setHeat(heat);
     }

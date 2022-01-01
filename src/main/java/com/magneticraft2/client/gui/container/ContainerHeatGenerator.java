@@ -106,7 +106,7 @@ public class ContainerHeatGenerator extends Container {
         addDataSlot(new IntReferenceHolder() {
             @Override
             public int get() {
-                return (int) getHeat() & 0xffff;
+                return getHeat() & 0xffff;
             }
 
             @Override
@@ -120,7 +120,7 @@ public class ContainerHeatGenerator extends Container {
         addDataSlot(new IntReferenceHolder() {
             @Override
             public int get() {
-                return ((int)getHeat() >> 16) & 0xffff;
+                return (getHeat() >> 16) & 0xffff;
             }
 
             @Override
@@ -145,10 +145,10 @@ public class ContainerHeatGenerator extends Container {
     }
 
 
-    public double getHeat(){
+    public int getHeat(){
         return tileEntity.getCapability(CapabilityHeat.HEAT).map(IHeatStorage::getHeatStored).orElse(0);
     }
-    public double getHeatLimit(){
+    public int getHeatLimit(){
         return tileEntity.getCapability(CapabilityHeat.HEAT).map(IHeatStorage::getMaxHeatStored).orElse(0);
     }
 }

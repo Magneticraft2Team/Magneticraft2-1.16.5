@@ -46,7 +46,7 @@ public class ScreenHeatGenerator extends ContainerScreen<ContainerHeatGenerator>
         this.blit(matrixStack, relX, relY, 0, 0, this.imageWidth + 4, this.imageHeight + 25);
         int k = this.getEnergyStoredScaled(40);
         this.blit(matrixStack, this.leftPos + 121, this.topPos + 27, 180, 42, 16, 41 - k);
-        double c = this.getHeatStoredScaled(40);
+        int c = this.getHeatStoredScaled(40);
         this.blit(matrixStack, this.leftPos + 49, this.topPos + 27, 180, 0, 16 , (int) (41 - c));
     }
 
@@ -55,9 +55,9 @@ public class ScreenHeatGenerator extends ContainerScreen<ContainerHeatGenerator>
         int j = this.menu.getEnergylimit();
         return i != 0 && j != 0 ? i * pixels / j : 0;
     }
-    private double getHeatStoredScaled(int pixels) {
-        double i = this.menu.getHeat();
-        double j = this.menu.getHeatLimit();
+    private int getHeatStoredScaled(int pixels) {
+        int i = this.menu.getHeat();
+        int j = this.menu.getHeatLimit();
         return i != 0 && j != 0 ? i * pixels / j : 0;
     }
 
