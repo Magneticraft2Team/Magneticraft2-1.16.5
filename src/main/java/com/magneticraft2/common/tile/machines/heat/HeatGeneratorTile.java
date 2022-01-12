@@ -3,10 +3,13 @@ package com.magneticraft2.common.tile.machines.heat;
 
 import com.magneticraft2.client.gui.container.ContainerHeatGenerator;
 import com.magneticraft2.common.registry.TileentityRegistry;
+import com.magneticraft2.common.systems.heat.BiomHeatHandling;
 import com.magneticraft2.common.tile.TileEntityMagneticraft2;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -14,8 +17,10 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import javax.annotation.Nullable;
 
-public class HeatGeneratorTile extends TileEntityMagneticraft2 {
+import static com.magneticraft2.common.systems.heat.BiomHeatHandling.getHeatManagment;
 
+public class HeatGeneratorTile extends TileEntityMagneticraft2 {
+    boolean alreadyset = false;
     public HeatGeneratorTile() {
         super(TileentityRegistry.Tile_Heat_Generator.get());
         containerProvider = this;
@@ -23,12 +28,30 @@ public class HeatGeneratorTile extends TileEntityMagneticraft2 {
     }
 
     @Override
+    public CompoundNBT save(CompoundNBT tag) {
+        tag.putBoolean("set", alreadyset);
+        return super.save(tag);
+    }
+
+    @Override
+    public void load(BlockState state, CompoundNBT tag) {
+        alreadyset = tag.getBoolean("set");
+        super.load(state, tag);
+    }
+
+
+    @Override
     public void tick() {
         if (!level.isClientSide){
+            if (!alreadyset) {
+                //Here we set the default
+                this.addHeatToStorage(getHeatManagment(level, getBlockPos(), "start"));
+                alreadyset = true;
+            }
             if (getEnergyStorage() < 1) {
                 if (level.getGameTime() % 15 == 0) {
-                    if (this.getHeatStorage() > getStartHeat(level, getBlockPos())) {
-                        this.removeHeatFromStorage(1);
+                    if (this.getHeatStorage() > getHeatManagment(level, getBlockPos(), "min")) {
+                        this.removeHeatFromStorage(getHeatManagment(level, getBlockPos(), "losetick"));
                     }
                 }
                 return;
@@ -36,12 +59,13 @@ public class HeatGeneratorTile extends TileEntityMagneticraft2 {
 
             if (this.getHeatStorage() >= this.getMaxHeatStorage()){
                 this.setHeatHeat(this.getMaxHeatStorage());
-                this.removeHeatFromStorage(2);
+                this.removeHeatFromStorage(getHeatManagment(level, getBlockPos(), "losetick"));
             }else{
                 this.removeEnergyFromStorage(300);
-                this.addHeatToStorage(1);
+                this.addHeatToStorage(getHeatManagment(level, getBlockPos(), "gain"));
             }
         }
+        
 
     }
 

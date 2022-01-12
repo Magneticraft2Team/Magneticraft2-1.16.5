@@ -1,6 +1,7 @@
 package com.magneticraft2.common.registry;
 
 import com.magneticraft2.common.block.conveyor.BlockConveyor;
+import com.magneticraft2.common.block.devblocks.InfiniteEnergyBlock;
 import com.magneticraft2.common.block.devblocks.InfiniteHeatBlock;
 import com.magneticraft2.common.block.machines.heat.HeatGeneratorBlock;
 import net.minecraft.block.AbstractBlock;
@@ -28,12 +29,13 @@ public class BlockRegistry {
      * Dev tools
      */
     public static final RegistryObject<Block> DevT1_Heat_inf = register("infheat", () -> new InfiniteHeatBlock(AbstractBlock.Properties.of(Material.METAL).strength(3.5F).noOcclusion().requiresCorrectToolForDrops()));
+    public static final RegistryObject<Block> DevT1_Energy_inf = register("infenergy", () -> new InfiniteEnergyBlock(AbstractBlock.Properties.of(Material.METAL).strength(3.5F).noOcclusion().requiresCorrectToolForDrops()));
 
     /*
      * None MB blocks
      */
     public static final RegistryObject<Block> Block_Conveyor = register("conveyor", () -> new BlockConveyor(AbstractBlock.Properties.of(Material.METAL).strength(3.5F).noOcclusion().requiresCorrectToolForDrops()));
-    public static final RegistryObject<Block> Block_Heat_Generator = register("heat_generator", () -> new HeatGeneratorBlock(AbstractBlock.Properties.of(Material.METAL).strength(3.5F).noOcclusion().requiresCorrectToolForDrops()));
+    public static final RegistryObject<Block> Block_Heat_Generator = register("heat_generator", () -> new HeatGeneratorBlock(AbstractBlock.Properties.of(Material.METAL).strength(3.5F).noOcclusion().requiresCorrectToolForDrops().lightLevel((s) -> 11)));
     //public static final RegistryObject<Block> test = register("test", () -> new testBlockfortestTile(AbstractBlock.Properties.of(Material.METAL).strength(3.5F).noOcclusion().requiresCorrectToolForDrops()));
 
 

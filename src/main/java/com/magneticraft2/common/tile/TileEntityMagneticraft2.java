@@ -139,16 +139,11 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
      *Energy, Item, Fluid, Pressure & Heat handler
      */
 
-    public int getStartHeat(World world, BlockPos pos) {
-        if (world.getBiomeManager().getBiome(pos).getRegistryName().equals(new ResourceLocation("desert"))){
-            return 35;
-        }
-
-        return 0;
-    }
-
     public void setHeatHeat(int heat) {
         createHeat().setHeat(heat);
+    }
+    public void setEnergyEnergy(int energy) {
+        createEnergy().setEnergy(energy);
     }
 
     private FluidStorages createFluid(){
@@ -416,6 +411,9 @@ public abstract class TileEntityMagneticraft2 extends TileEntity implements ITic
     }
     public int getMaxEnergyStorage(){
         return this.energyHandler.getMaxEnergyStored();
+    }
+    public void addEnergyToStorage(int energy){
+        this.energyHandler.addEnergy(energy);
     }
 
     public void removeEnergyFromStorage(int energy) {

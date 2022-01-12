@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 public class HeatGeneratorBlock extends BlockMagneticraft2 {
     public HeatGeneratorBlock(Properties properties) {
         super(properties);
+
     }
 
     @Override
