@@ -19,7 +19,7 @@ public class InfiniteEnergyTile extends TileEntityMagneticraft2 {
 
     @Override
     public Integer capacityE() {
-        return Integer.MAX_VALUE;
+        return 2147483647;
     }
 
     @Override
@@ -152,14 +152,11 @@ public class InfiniteEnergyTile extends TileEntityMagneticraft2 {
     public Container createMenu(int p_createMenu_1_, PlayerInventory p_createMenu_2_, PlayerEntity p_createMenu_3_) {
         return null;
     }
-
     @Override
     public void tick() {
         if (!level.isClientSide){
-            if (this.getEnergyStorage() >= this.getMaxEnergyStorage()){
-                this.setEnergyEnergy(this.getMaxEnergyStorage());
-            }else{
-                this.addEnergyToStorage(Integer.MAX_VALUE);
+            if (!(this.getEnergyStorage() >= this.getMaxEnergyStorage())){
+                this.addEnergyToStorage(2147483647);
             }
         }
     }
